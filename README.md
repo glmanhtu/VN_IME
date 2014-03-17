@@ -5,10 +5,7 @@ Hiện tại đang là phiên bản thử nghiệm. Nếu phát hiện lỗi tro
 
 Installing : 
 
-Vào Preferences->Browse Packages..
-Trở lại thư mục sublime-text-3.
-Vào thư mục Installed Packages.
-Copy file VN IME.sublime-package vào thư mục Installed Packages.
+Package control -> Install package -> Vn ime
 
 Usage : 
 
