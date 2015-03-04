@@ -8,7 +8,7 @@ Phiên bản 1 với 2 nhánh riêng biệt cho kiểu gõ VNI và TELEX đượ
 
 ## Cài đặt
 
-Package Control: Install Package -> Vn ime
+Package Control: Install Package -> `vn ime`
 
 ## Hướng dẫn sử dụng
 
@@ -16,4 +16,4 @@ Nhấn phím F2 để bật gõ tiếng Việt, mặc định là kiểu gõ VNI
 
 Khi thanh status hiện chữ `VN IME : ON` là đang bật, `VN IME : OFF` là đã tắt
 
-Để dùng kiểu gõ TELEX, sửa gía trị "telex" trong tập tin vn_ime.sublime-settings thành giá trị `true`
+Để dùng kiểu gõ TELEX, sửa giá trị `telex` trong tập tin `vn_ime.sublime-settings` thành giá trị `true`
