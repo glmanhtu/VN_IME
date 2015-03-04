@@ -1,0 +1,5 @@
+// Mặc định VM IME plugin cho Sublime Text 3 sử dụng kiểu gõ VNI
+// nếu bạn muốn sử dụng TELEX thay cho VNI, sửa giá trị "telex" thành true
+{
+	"telex": false
+}

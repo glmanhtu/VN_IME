@@ -1,15 +1,19 @@
-VN_IME
-=======================
-Gõ tiếng việt trên sublime text 3 phiên bản linux
-Hiện tại đang là phiên bản thử nghiệm. Nếu phát hiện lỗi trong quá trình sử dụng, vui lòng report trên github
+# Vietnamese IME - Bộ gõ tiếng Việt
 
-Installing : 
+Gõ tiếng Việt trên Sublime Text 3
 
-Package control -> Install package -> Vn ime
+Phiên bản 2 sử dụng engine BoGoEngine của ibus-bogo
 
-Usage : 
+Phiên bản 1 với 2 nhánh riêng biệt cho kiểu gõ VNI và TELEX được lưu tại Repo [VN_IME](https://github.com/88d52bdba0366127fffca9dfa93895/VN_IME) và tại nhánh [TELEX](https://github.com/yehnkay/VN_IME/tree/TELEX)
 
-Nhấn phím F2 để bật gõ tiếng việt, nhấn lại phím F2 để tắt.
-Khi thanh status hiện chữ VN IME : ON là đang bật, VN IME : OFF là đã tắt.
+## Cài đặt
 
----------------------------------------------------------------------
+Package Control: Install Package -> Vn ime
+
+## Hướng dẫn sử dụng
+
+Nhấn phím F2 để bật gõ tiếng Việt, mặc định là kiểu gõ VNI. Nhấn tiếp phím F2 để tắt 
+
+Khi thanh status hiện chữ `VN IME : ON` là đang bật, `VN IME : OFF` là đã tắt
+
+Để dùng kiểu gõ TELEX, sửa gía trị "telex" trong tập tin vn_ime.sublime-settings thành giá trị `true`
