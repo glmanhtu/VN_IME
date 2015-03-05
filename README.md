@@ -16,10 +16,4 @@ Nhấn phím F2 để bật gõ tiếng Việt, mặc định là kiểu gõ VNI
 
 Khi thanh status hiện chữ `VN IME : ON` là đang bật, `VN IME : OFF` là đã tắt
 
-Để dùng kiểu gõ TELEX, tạo tập tin `vn_ime.sublime-settings` trong thư mục `Packages/User/` với nội dung
-
-```
-{
-  "telex": true
-}
-```
+Để dùng kiểu gõ TELEX, sửa giá trị `telex` trong tập tin `vn_ime.sublime-settings` thành giá trị `true`
