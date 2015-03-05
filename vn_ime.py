@@ -50,6 +50,7 @@ class ControlimeCommand(sublime_plugin.TextCommand):
     global TELEX
 
     settings = sublime.load_settings("vn_ime.sublime-settings")
+    sublime.status_message(str(settings.get("telex")))
     if settings.get("telex"):
       TELEX = True
     else:
