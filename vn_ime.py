@@ -1,12 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from functools import partial
-import codecs
-
-from .bogo.core import _Action, _get_action, get_vni_definition, process_sequence
-from .bogo.mark import Mark
-
-import os
+from .bogo.core import get_vni_definition, process_sequence
 import sublime, sublime_plugin
 
 STATUS = False
@@ -23,28 +15,26 @@ class StartimeCommand(sublime_plugin.TextCommand):
     if not STATUS:
       return False
 
-    position = self.view.sel()[0]
+    if self.view.size() <= self.current_size:
+      self.current_size = self.view.size()
+      return True
 
-    if self.view.size() > self.current_size:
-      a = self.view.sel()[0].begin()-1
-      b = self.view.sel()[0].end()
-      word_position = sublime.Region(a, b)
-      word_region = self.view.word(word_position)
-      word = self.view.substr(word_region)
+    current_position = self.view.sel()[0]
+    word_region = self.view.word(current_position)
+    word = self.view.substr(word_region)
 
-      final = self.process(word)
-      
-      if not final:
-        return False
-        
-      self.view.run_command("runchange", {"a":a, "b":b, "string":final})
-
-      self.current_size = self.view.size();
-    elif self.view.size() < self.current_size:
-      self.current_size = self.view.size();
+    final = self.process(word)
     
+    if not final:
+      return False
+      
+    self.view.run_command("runchange", {"string":final})
+    self.current_size = self.view.size()
+    return True
+
   def process(self, word):
     global TELEX
+
     if TELEX:
       final_word = process_sequence(word)
     else:
@@ -67,14 +57,13 @@ class ControlimeCommand(sublime_plugin.TextCommand):
 
     if STATUS:
       STATUS = False
-      sublime.status_message("VN IME Stoped")
       self.view.set_status('VN IME'," VN IME: OFF")
     else:
       STATUS = True
-      sublime.status_message("VN IME Started")
       self.view.set_status('VN IME'," VN IME: ON")
 
 class RunchangeCommand(sublime_plugin.TextCommand):
-  def run(self, edit, a, b, string):
-    region = self.view.word(sublime.Region(a,b))
-    self.view.replace(edit,region,string)
+  def run(self, edit, string):
+    current_position = self.view.sel()[0]
+    region = self.view.word(current_position)
+    self.view.replace(edit, region, string)
