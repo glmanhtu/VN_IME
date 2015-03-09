@@ -49,11 +49,12 @@ class ControlimeCommand(sublime_plugin.TextCommand):
     global STATUS
     global TELEX
 
-    settings = sublime.load_settings("vn_ime.sublime-settings")
+    settings = sublime.load_settings("Preferences.sublime-settings")
     if settings.get("telex"):
       TELEX = True
     else:
       TELEX = False
+    sublime.error_message(str(TELEX))
 
     if STATUS:
       STATUS = False
