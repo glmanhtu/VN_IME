@@ -54,7 +54,6 @@ class ControlimeCommand(sublime_plugin.TextCommand):
       TELEX = True
     else:
       TELEX = False
-    sublime.error_message(str(TELEX))
 
     if STATUS:
       STATUS = False
