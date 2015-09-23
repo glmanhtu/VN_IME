@@ -1,5 +1,5 @@
 [
-	{ "keys": ["f2"], "command": "controlime" },
+    { "keys": ["f2"], "command": "controlime" },
     { "keys": ["ctrl+z"], "command": "funcundo" },
     { "keys": ["ctrl+v"], "command": "funcpaste" },
     { "keys": ["ctrl+y"], "command": "funcredo" },
