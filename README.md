@@ -10,6 +10,9 @@ Nhấn phím `Delete` để bật tắt chế độ gõ tiếng Việt.
 ## TODO
 
 - Binding zig code vào python
-  xem https://github.com/gwenzek/fastBPE/blob/master/setup.py
+  
+  https://dev.to/tonetheman/call-zig-from-python-3fmo
+
+  https://github.com/gwenzek/fastBPE/blob/master/test/test_zig.py
 
 ## DONE
