@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
@@ -30,12 +30,6 @@ from . import accent, mark, utils
 Accent = accent.Accent
 
 
-# Auto-generated lists from dictionary
-
-# FIXME:
-# Think about words composed entirely of vowels, like 'yá'.
-# Perhaps let the user customize these lists?
-
 CONSONANTS = set([
     'b', 'c', 'ch', 'd', 'g', 'gh', 'gi', 'h', 'k', 'kh', 'l', 'm', 'n', 'ng',
     'ngh', 'nh', 'p', 'ph', 'qu', 'r', 's', 't', 'th', 'tr', 'v', 'x', 'đ'
@@ -63,13 +57,12 @@ STRIPPED_VOWELS = set(map(mark.strip, VOWELS))
 
 # 'uo' may clash with 'ươ' and prevent typing 'thương'
 # 'ua' may clash with 'uâ' and prevent typing 'luật'
-STRIPPED_TERMINAL_VOWELS = set(map(mark.strip, TERMINAL_VOWELS)) - \
-    set(['uo', 'ua'])
+STRIPPED_TERMINAL_VOWELS = \
+    set(map(mark.strip, TERMINAL_VOWELS)) - set(['uo', 'ua'])
 
 
 SoundTuple = \
-    collections.namedtuple('SoundTuple',
-                           ['first_consonant', 'vowel', 'last_consonant'])
+    collections.namedtuple('SoundTuple', ['first_consonant', 'vowel', 'last_consonant'])
 
 
 def is_valid_string(string, final_form=True):
@@ -180,7 +173,6 @@ def has_valid_vowel(sound_tuple):
     # The ng and nh rules are not really phonetic but spelling rules.
     # Including them may hinder typing freedom and may prevent typing
     # unique local names.
-    # FIXME: Config key, anyone?
     return \
         has_valid_vowel_form() and \
         has_valid_ch_ending() and \

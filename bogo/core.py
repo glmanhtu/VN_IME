@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
@@ -42,21 +42,13 @@ class _Action:
     ADD_CHAR = 0
 
 
-def get_telex_definition(w_shorthand=True, brackets_shorthand=True):
+def get_telex_definition(w_shorthand=False):
     """Create a definition dictionary for the TELEX input method
-
-    Args:
-        w_shorthand (optional): allow a stand-alone w to be
-            interpreted as an ư. Default to True.
-        brackets_shorthand (optional, True): allow typing ][ as
-            shorthand for ươ. Default to True.
-
     Returns a dictionary to be passed into process_key().
     """
-    telex = {
-        # "a": "a^",
-        # "o": "o^",
-        # "e": "e^",
+    return {
+        # Ko dùng aa => â, oo => ô, ee => ê để tránh lẫn với tiếng Anh (teen, moon ..)
+        # Chuyển sang dùng `z` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
         "z": ["a^", "o^", "e^"],
         "w": ["u*", "o*", "a+"],
         "d": "d-",
@@ -66,18 +58,6 @@ def get_telex_definition(w_shorthand=True, brackets_shorthand=True):
         "x": "~",
         "j": ".",
     }
-
-    if w_shorthand:
-        telex["w"].append('<ư')
-
-    if brackets_shorthand:
-        telex.update({
-            "]": "<ư",
-            "[": "<ơ",
-            "}": "<Ư",
-            "{": "<Ơ"
-        })
-
     return telex
 
 
@@ -237,18 +217,9 @@ def process_key(string, key,
             def not_first_key_press():
                 return len(fallback_sequence) >= 1
 
-            def user_typed_ww():
-                return (fallback_sequence[-1:]+key).lower() == "ww"
-
-            def user_didnt_type_uww():
-                return not (len(fallback_sequence) >= 2 and
-                            fallback_sequence[-2].lower() == "u")
-
             if is_telex_like() and \
                     not_first_key_press() and \
-                    undone_vowel_ends_with_u() and \
-                    user_typed_ww() and \
-                    user_didnt_type_uww():
+                    undone_vowel_ends_with_u():
                 # The vowel part of new_comps is supposed to end with
                 # u now. That u should be removed.
                 new_comps[1] = new_comps[1][:-1]

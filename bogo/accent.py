@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
@@ -33,11 +33,11 @@ from . import utils
 
 
 class Accent:
-    GRAVE = 5
-    ACUTE = 4
-    HOOK = 3
-    TIDLE = 2
-    DOT = 1
+    GRAVE = 5 # huyền
+    ACUTE = 4 # sắc (nhọn = acute :)
+    HOOK = 3  # hỏi
+    TIDLE = 2 # ngã
+    DOT = 1   # nặng
     NONE = 0
 
 

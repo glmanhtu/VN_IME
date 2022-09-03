@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>

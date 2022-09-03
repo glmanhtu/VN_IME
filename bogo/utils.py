@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
@@ -72,24 +72,6 @@ def append_comps(comps, char):
         else: pos = 2
     c[pos] += char
     return c
-
-
-# def gibberish_split(head, tail=""):
-#     """
-#     Try to split a string into two parts: the alphabetic part at the end and the
-#     rest.
-
-#     >>> gibberish_split("aoeu")
-#     ("", "aoeu")
-#     >>> gibberish_split("ao.eu")
-#     ("ao.", "eu")
-#     >>> gibberish_split("aoeu.")
-#     ("aoeu.", "")
-#     """
-#     if head == "" or not head[-1].isalpha():
-#         return (head, tail)
-#     else:
-#         return gibberish_split(head[:-1], head[-1] + tail)
 
 
 def separate(string):

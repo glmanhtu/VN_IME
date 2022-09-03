@@ -1,3 +1,6 @@
+# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
+# Bộ gõ song ngữ Anh Việt thông minh
+
 from .bogo.core import process_sequence
 import sublime, sublime_plugin
 
@@ -22,9 +25,9 @@ class StartimeCommand(sublime_plugin.TextCommand):
     return True
 
   def process(self, word):
-    final_word = process_sequence(word)
-    if final_word != word:
-      return final_word
+    last_char = word[-1].lower()
+    if last_char in "wrsfjzx": # Chỉ convert sang TV khi dùng các ký tự `wrsfjzx`
+      return process_sequence(word)
     return False
 
 class ControlimeCommand(sublime_plugin.TextCommand):

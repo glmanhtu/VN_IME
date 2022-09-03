@@ -1,16 +1,17 @@
 Gõ tiếng Việt thông minh trên Sublime Text
 
-Cài đặt bằng tay:
+Cài đặt locally:
 ```
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
 ```
-
-Nhấn phím `Delete` để bật tắt chế độ gõ tiếng Việt.
+Nhấn phím `esc` để bật tắt chế độ gõ tiếng Việt.
 
 ## TODO
 
 
 ## DONE
+
+- Chỉ convert sang TV khi dùng các ký tự `wrsfjzx`
 
 - Dùng `z` để bỏ dấu `ô ê â`
 
