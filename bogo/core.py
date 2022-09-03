@@ -48,8 +48,8 @@ def get_telex_definition(w_shorthand=False):
     """
     return {
         # Ko dùng aa => â, oo => ô, ee => ê để tránh lẫn với tiếng Anh (teen, moon ..)
-        # Chuyển sang dùng `z` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
-        "z": ["a^", "o^", "e^"],
+        # Chuyển sang dùng `q` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
+        "q": ["a^", "o^", "e^"], # dùng `q` thay cho `z` để ko chuyển tay quá xa
         "w": ["u*", "o*", "a+"],
         "d": "d-",
         "f": "\\",

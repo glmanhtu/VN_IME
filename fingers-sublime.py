@@ -26,7 +26,7 @@ class StartimeCommand(sublime_plugin.TextCommand):
 
   def process(self, word):
     last_char = word[-1].lower()
-    if last_char in "wrsfjzx": # Chỉ convert sang TV khi dùng các ký tự `wrsfjzx`
+    if last_char in "qwrsfjx":
       return process_sequence(word)
     return False
 

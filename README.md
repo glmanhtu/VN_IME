@@ -11,9 +11,10 @@ Nhấn phím `esc` để bật tắt chế độ gõ tiếng Việt.
 
 ## DONE
 
-- Chỉ convert sang TV khi dùng các ký tự `wrsfjzx`
+- Chỉ convert sang TV khi dùng các ký tự `qwrsfjx`
 
-- Dùng `z` để bỏ dấu `ô ê â`
+- Dùng `q` để bỏ dấu `ô ê â` => handle `moon teen boong` well
 
 - Tìm cách bind zig code vào python
   https://github.com/gwenzek/fastBPE/blob/master/test/test_zig.py
+
