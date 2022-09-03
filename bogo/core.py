@@ -55,9 +55,9 @@ def get_telex_definition(w_shorthand=True, brackets_shorthand=True):
     Returns a dictionary to be passed into process_key().
     """
     telex = {
-        "a": "a^",
-        "o": "o^",
-        "e": "e^",
+        # "a": "a^",
+        # "o": "o^",
+        # "e": "e^",
         "z": ["a^", "o^", "e^"],
         "w": ["u*", "o*", "a+"],
         "d": "d-",
