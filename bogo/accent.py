@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-#
-# This file is part of ibus-bogo project.
+# Copyright (C) 2022 Tuoc <dungtn@gmail.com>
+# Bộ gõ song ngữ Anh Việt thông minh
 #
 # Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
 # Copyright (C) 2012-2013 Trung Ngo <ndtrung4419@gmail.com>
