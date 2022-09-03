@@ -1,4 +1,4 @@
-from .bogo.core import get_vni_definition, process_sequence
+from .bogo.core import process_sequence
 import sublime, sublime_plugin
 
 STATUS = True

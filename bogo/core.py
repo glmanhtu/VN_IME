@@ -58,6 +58,7 @@ def get_telex_definition(w_shorthand=True, brackets_shorthand=True):
         "a": "a^",
         "o": "o^",
         "e": "e^",
+        "z": ["a^", "o^", "e^"],
         "w": ["u*", "o*", "a+"],
         "d": "d-",
         "f": "\\",
@@ -79,24 +80,6 @@ def get_telex_definition(w_shorthand=True, brackets_shorthand=True):
         })
 
     return telex
-
-
-def get_vni_definition():
-    """Create a definition dictionary for the VNI input method.
-
-    Returns a dictionary to be passed into process_key().
-    """
-    return {
-        "6": ["a^", "o^", "e^"],
-        "7": ["u*", "o*"],
-        "8": "a+",
-        "9": "d-",
-        "2": "\\",
-        "1": "/",
-        "3": "?",
-        "4": "~",
-        "5": "."
-    }
 
 
 def _accepted_chars(rules):
