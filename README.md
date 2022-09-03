@@ -2,7 +2,7 @@ Gõ tiếng Việt thông minh trên Sublime Text
 
 Cài đặt bằng tay:
 ```
-ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers
+ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
 ```
 
 
