@@ -1,8 +1,8 @@
 from .bogo.core import get_vni_definition, process_sequence
 import sublime, sublime_plugin
 
-STATUS = False
-TELEX = False
+STATUS = True
+TELEX = True
 
 class SaveOnModifiedListener(sublime_plugin.EventListener):
   def on_modified_async(self, view):
@@ -22,10 +22,7 @@ class StartimeCommand(sublime_plugin.TextCommand):
     return True
 
   def process(self, word):
-    if TELEX:
-      final_word = process_sequence(word)
-    else:
-      final_word = process_sequence(word, rules=get_vni_definition())
+    final_word = process_sequence(word)
     if final_word != word:
       return final_word
     return False
@@ -33,14 +30,6 @@ class StartimeCommand(sublime_plugin.TextCommand):
 class ControlimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     global STATUS
-    global TELEX
-    #
-    settings = sublime.load_settings("Preferences.sublime-settings")
-    if settings.get("telex"):
-      TELEX = True
-    else:
-      TELEX = False
-    #
     if STATUS:
       STATUS = False
       self.view.set_status('Fingers'," Fingers: OFF")
