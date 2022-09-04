@@ -7,16 +7,25 @@ import sublime, sublime_plugin
 STATUS = True
 TELEX = True
 
-class SaveOnModifiedListener(sublime_plugin.EventListener):
+class FingersPlugin(sublime_plugin.EventListener):
   def on_modified_async(self, view):
     view.run_command('startime')
 
+  # https://www.sublimetext.com/docs/completions.html#context-aware-suggestions
+  # def on_query_completions(self, view):
+  #   view.run_command('startime')
+
 class StartimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    if not STATUS: return False
+    # if not STATUS: return False
+    # curr_pos = self.view.sel()[0]
+    # word_region = self.view.word(curr_pos)
+    # word = self.view.substr(word_region)
+    # final = self.process(origin)
+    # if final == word: return []
+    # return [final]
 
     SEP = "_"
-
     curr_pos = self.view.sel()[0]
     word_region = self.view.word(curr_pos)
     parts = self.view.substr(word_region).split(SEP)
@@ -30,6 +39,7 @@ class StartimeCommand(sublime_plugin.TextCommand):
     if final != origin: final = SEP.join((final, origin))
     self.view.end_edit(edit)
     self.view.run_command("runchange", {"string":final})
+    self.view.replace(self.edit, region, final);
     return True
 
   def process(self, word):
@@ -38,6 +48,12 @@ class StartimeCommand(sublime_plugin.TextCommand):
     # if last_char in "qwrsfjx" or (last_char == 'd' and word[-2].lower() == 'd'):
     #   return process_sequence(word)
     # return False
+
+class RunchangeCommand(sublime_plugin.TextCommand):
+  def run(self, edit, string):
+    curr_pos = self.view.sel()[0]
+    region = self.view.word(curr_pos)
+    self.view.replace(edit, region, string)
 
 class ControlimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
@@ -48,12 +64,6 @@ class ControlimeCommand(sublime_plugin.TextCommand):
     else:
       STATUS = True
       self.view.set_status('Fingers'," Fingers: ON")
-
-class RunchangeCommand(sublime_plugin.TextCommand):
-  def run(self, edit, string):
-    curr_pos = self.view.sel()[0]
-    region = self.view.word(curr_pos)
-    self.view.replace(edit, region, string)
 
 class FuncundoCommand(sublime_plugin.WindowCommand):
   def run(self):
