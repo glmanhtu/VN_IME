@@ -14,21 +14,30 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
 class StartimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     if not STATUS: return False
+
+    SEP = "_"
+
     curr_pos = self.view.sel()[0]
     word_region = self.view.word(curr_pos)
-    word = self.view.substr(word_region)
-    final = self.process(word)
-    #
-    if not final: return False
+    parts = self.view.substr(word_region).split(SEP)
+
+    prev = parts[0]
+    origin = parts[-1]
+
+    final = self.process(origin)
+    if final == prev: return False
+
+    if final != origin: final = SEP.join((final, origin))
     self.view.end_edit(edit)
     self.view.run_command("runchange", {"string":final})
     return True
 
   def process(self, word):
-    last_char = word[-1].lower()
-    if last_char in "qwrsfjx":
-      return process_sequence(word)
-    return False
+    return process_sequence(word)
+    # last_char = word[-1].lower()
+    # if last_char in "qwrsfjx" or (last_char == 'd' and word[-2].lower() == 'd'):
+    #   return process_sequence(word)
+    # return False
 
 class ControlimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):

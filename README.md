@@ -5,12 +5,11 @@ Cài đặt locally:
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
 ```
 
-## TODO
-
+- Hiển thị raw string vả telexifed string
 
 ## DONE
 
-- Chỉ convert sang TV khi dùng các ký tự `qwrsfjx`
+- Chỉ convert sang TV khi dùng các ký tự `qwrsfjx` hoặc `dd`
 
 - Dùng `q` để bỏ dấu `ô ê â` => handle `moon teen boong` well
 
