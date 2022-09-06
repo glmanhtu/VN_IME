@@ -3,7 +3,7 @@
 
 from .bogo.core import process_sequence
 import sublime, sublime_plugin
-import os, urllib.parse
+import os, webbrowser, urllib.parse
 
 STATUS = True
 TELEX = True
@@ -18,10 +18,11 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
     if not selection:
       return
 
-    cmd = "open https://translate.google.com/\\?hl=vi\\&sl=auto\\&tl=vi\\&text="
-    cmd = cmd + urllib.parse.quote(selection)
-    self.view.run_command("runchange", {"string":cmd})
-    os.system(cmd)
+    url = "https://translate.google.com/?hl=vi&sl=auto&tl=vi&text="
+    url = url + urllib.parse.quote(selection)
+    self.view.run_command("runchange", {"string":url})
+    webbrowser.open(url)
+
 
 
 class FingersPlugin(sublime_plugin.EventListener):
