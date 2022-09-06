@@ -17,13 +17,7 @@ class FingersPlugin(sublime_plugin.EventListener):
 
 class StartimeCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    # if not STATUS: return False
-    # curr_pos = self.view.sel()[0]
-    # word_region = self.view.word(curr_pos)
-    # word = self.view.substr(word_region)
-    # final = self.process(origin)
-    # if final == word: return []
-    # return [final]
+    if not STATUS: return False
 
     SEP = "_"
     curr_pos = self.view.sel()[0]
@@ -34,20 +28,20 @@ class StartimeCommand(sublime_plugin.TextCommand):
     origin = parts[-1]
 
     final = self.process(origin)
-    if final == prev: return False
+    if not final or final == prev: return False
 
-    if final != origin: final = SEP.join((final, origin))
+    # if final != origin: final = SEP.join((final, origin))
     self.view.end_edit(edit)
     self.view.run_command("runchange", {"string":final})
     self.view.replace(self.edit, region, final);
     return True
 
   def process(self, word):
-    return process_sequence(word)
-    # last_char = word[-1].lower()
-    # if last_char in "qwrsfjx" or (last_char == 'd' and word[-2].lower() == 'd'):
-    #   return process_sequence(word)
-    # return False
+    # return process_sequence(word)
+    last_char = word[-1].lower()
+    if last_char in "qwrsfjx" or (last_char == 'd' and word[-2].lower() == 'd'):
+      return process_sequence(word)
+    return False
 
 class RunchangeCommand(sublime_plugin.TextCommand):
   def run(self, edit, string):
@@ -65,14 +59,6 @@ class ControlimeCommand(sublime_plugin.TextCommand):
       STATUS = True
       self.view.set_status('Fingers'," Fingers: ON")
 
-class FuncundoCommand(sublime_plugin.WindowCommand):
-  def run(self):
-    self.window.run_command("undo")
-
-class FuncpasteCommand(sublime_plugin.WindowCommand):
-  def run(self):
-    self.window.run_command("paste")
-
-class FuncredoCommand(sublime_plugin.WindowCommand):
-  def run(self):
-    self.window.run_command("redo")
+# class FuncundoCommand(sublime_plugin.WindowCommand):
+#   def run(self):
+#     self.window.run_command("undo")
