@@ -3,12 +3,11 @@
 
 from .bogo.core import process_sequence
 import sublime, sublime_plugin
-import os
+import os, urllib.parse
 
 STATUS = True
 TELEX = True
 
-# https://github.com/futureprogrammer360/Dictionary/blob/master/dictionary.py
 class GoogleTranslateCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     region = self.view.sel()[0]
@@ -19,10 +18,10 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
     if not selection:
       return
 
-    cmd = "open https://translate.google.com/?hl=vi&sl=auto&tl=vi&text="
-    cmd = cmd + selection
+    cmd = "open https://translate.google.com/\\?hl=vi\\&sl=auto\\&tl=vi\\&text="
+    cmd = cmd + urllib.parse.quote(selection)
     self.view.run_command("runchange", {"string":cmd})
-    # os.system(cmd)
+    os.system(cmd)
 
 
 class FingersPlugin(sublime_plugin.EventListener):
