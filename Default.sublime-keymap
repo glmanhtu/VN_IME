@@ -1,5 +1,5 @@
 [
-    { "keys": ["escape"], "command": "controlime" },
-    { "keys": ["ctrl+z"], "command": "funcundo" },
-    { "keys": ["space"], "command": "finishword" },
+    { "keys": ["command+escape"], "command": "controlime" },
+    { "keys": ["ctrl+escape"], "command": "google_translate" },
+    { "keys": ["space"], "command": "finish_word" }, // chưa làm
 ]

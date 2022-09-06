@@ -4,8 +4,11 @@ Cài đặt locally:
 ```
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
 ```
+## DOING
 
-- Hiển thị raw string vả telexifed string
+- Hiển thị raw string vả telexifed string. ấn `space` để chọn đề xuất mặc định, ấn `[`, `]` để chọn trong danh sách đề xuất
+
+- Học https://github.com/futureprogrammer360/Dictionary để hiện items đề xuất
 
 ## DONE
 
