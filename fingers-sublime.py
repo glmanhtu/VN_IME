@@ -17,10 +17,8 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
       selection = self.view.substr(region)  # Text selected
     if not selection:
       return
-
     url = "https://translate.google.com/?hl=vi&sl=auto&tl=vi&text="
     url = url + urllib.parse.quote(selection)
-    self.view.run_command("runchange", {"string":url})
     webbrowser.open(url)
 
 
