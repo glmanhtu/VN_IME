@@ -33,7 +33,7 @@ class StartimeCommand(sublime_plugin.TextCommand):
 
     curr_pos = self.view.sel()[0]
     word_region = self.view.word(curr_pos)
-    origin = self.view.substr(word_region).split(SEP)
+    origin = self.view.substr(word_region)
     # SEP = "_"
     # parts = self.view.substr(word_region).split(SEP)
     # prev = parts[0]

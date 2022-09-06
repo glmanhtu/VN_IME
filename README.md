@@ -10,6 +10,10 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 - Học https://github.com/futureprogrammer360/Dictionary để hiện items đề xuất
 
+- Dùng `on_query_context` để bắt key pressed
+  https://www.sublimetext.com/docs/api_reference.html#sublime_plugin.EventListener.on_query_context
+
+
 ## DONE
 
 - Chỉ convert sang TV khi dùng các ký tự `qwrsfjx` hoặc `dd`
