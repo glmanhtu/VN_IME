@@ -1,7 +1,7 @@
 # Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 
-from .bogo.core import process_sequence
+from .telexify.core import process_sequence
 import sublime, sublime_plugin
 import os, webbrowser, urllib.parse
 
