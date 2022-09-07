@@ -6,12 +6,9 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 ```
 ## DOING
 
-- Hiển thị raw string vả telexifed string. ấn `space` để chọn đề xuất mặc định, ấn `[`, `]` để chọn trong danh sách đề xuất
+- Hiển thị raw string vả telexifed string. ấn `space` để chọn đề xuất mặc định, ấn `[`, `]` để chọn trong danh sách đề xuất. https://www.sublimetext.com/docs/key_bindings.html
 
 - Học https://github.com/futureprogrammer360/Dictionary để hiện items đề xuất
-
-- Dùng `on_query_context` để bắt key pressed
-  https://www.sublimetext.com/docs/api_reference.html#sublime_plugin.EventListener.on_query_context
 
 ## DONE
 

@@ -21,12 +21,7 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
     webbrowser.open(url)
 
 
-
-class FingersPlugin(sublime_plugin.EventListener):
-  def on_modified_async(self, view):
-    view.run_command('startime')
-
-class StartimeCommand(sublime_plugin.TextCommand):
+class KeyPressedCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     if not STATUS: return False
 
