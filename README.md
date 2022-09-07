@@ -69,8 +69,8 @@ Dùng phân tích ngữ âm để tách âm tiết TV thành `initial`, `middle`
 Tạo 3 loại nodes:
 
 * `IntNode`: mảng children 25 con trỏ tới `MdlNode`
-* `MdlNode`: mảng children 42 con trỏ tới `FntNode`
-* `FntNode`: mảng children 25 con trỏ tới `IntNode` và `u32` đếm số lần xuất hiện
+* `MdlNode`: mảng children 42 con trỏ tới `FnlhNode`
+* `FnlNode`: mảng children 25 con trỏ tới `IntNode` và `u32` đếm số lần xuất hiện
 
 => IMF Trie :D
 
