@@ -13,6 +13,7 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 - Dùng `on_query_context` để bắt key pressed
   https://www.sublimetext.com/docs/api_reference.html#sublime_plugin.EventListener.on_query_context
 
+- `eeq` => `ê` ... để sửa sai nhanh khi gõ theo thói quen cũ `ee` => `ê`
 
 ## DONE
 

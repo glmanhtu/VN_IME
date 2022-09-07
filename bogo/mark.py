@@ -1,34 +1,7 @@
-# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
-# Bộ gõ song ngữ Anh Việt thông minh
-#
-# Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
-# Copyright (C) 2012-2013 Trung Ngo <ndtrung4419@gmail.com>
-# Copyright (C) 2013 Duong H. Nguyen <cmpitg@gmail.com>
-#
-# ibus-bogo is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# ibus-bogo is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ibus-bogo.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-"""
-Utility functions to deal with marks, which are diacritical markings
-to change the base sound of a character but not its tonal quality.
-E.g. the hat mark in â.
-"""
-
 from __future__ import unicode_literals
 
-from . import accent, utils
-Accent = accent.Accent
+from . import tone, utils
+Tone = tone.Tone
 
 
 class Mark:
@@ -50,7 +23,7 @@ def get_mark_char(char):
     """
     Get the mark of a single char, if any.
     """
-    char = accent.remove_accent_char(char.lower())
+    char = tone.remove_tone_char(char.lower())
     if char == "":
         return Mark.NONE
     if char == "đ":
@@ -70,8 +43,8 @@ def add_mark(components, mark):
     if mark == Mark.BAR and comp[0] and comp[0][-1].lower() in FAMILY_D:
         comp[0] = add_mark_at(comp[0], len(comp[0])-1, Mark.BAR)
     else:
-        #remove all marks and accents in vowel part
-        raw_vowel = accent.add_accent(comp, Accent.NONE)[1].lower()
+        #remove all marks and tones in vowel part
+        raw_vowel = tone.add_tone(comp, Tone.NONE)[1].lower()
         raw_vowel = utils.join([add_mark_char(c, Mark.NONE) for c in raw_vowel])
         if mark == Mark.HAT:
             pos = max(raw_vowel.find("a"), raw_vowel.find("o"),
@@ -114,8 +87,8 @@ def add_mark_char(char, mark):
     if char == "":
         return ""
     case = char.isupper()
-    ac = accent.get_accent_char(char)
-    char = accent.add_accent_char(char.lower(), Accent.NONE)
+    ac = tone.get_tone_char(char)
+    char = tone.add_tone_char(char.lower(), Tone.NONE)
     new_char = char
     if mark == Mark.HAT:
         if char in FAMILY_A:
@@ -147,7 +120,7 @@ def add_mark_char(char, mark):
         elif char in FAMILY_D:
             new_char = "d"
 
-    new_char = accent.add_accent_char(new_char, ac)
+    new_char = tone.add_tone_char(new_char, ac)
     return utils.change_case(new_char, case)
 
 
@@ -180,6 +153,6 @@ def remove_mark_string(string):
 
 def strip(string):
     """
-    Strip a string of all marks and accents.
+    Strip a string of all marks and tones.
     """
-    return remove_mark_string(accent.remove_accent_string(string))
+    return remove_mark_string(tone.remove_tone_string(string))

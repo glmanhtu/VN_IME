@@ -1,33 +1,7 @@
-# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
-# Bộ gõ song ngữ Anh Việt thông minh
-#
-# Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
-# Copyright (C) 2012-2013 Trung Ngo <ndtrung4419@gmail.com>
-# Copyright (C) 2013 Duong H. Nguyen <cmpitg@gmail.com>
-#
-# ibus-bogo is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# ibus-bogo is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ibus-bogo.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-"""
-Utility functions to check whether a word looks like Vietnamese
-or not (i.e. can be pronounced by a Vietnamese speaker).
-"""
-
 from __future__ import unicode_literals
 import collections
-from . import accent, mark, utils
-Accent = accent.Accent
+from . import tone, mark, utils
+Tone = tone.Tone
 
 
 CONSONANTS = set([
@@ -98,7 +72,7 @@ def is_valid_sound_tuple(sound_tuple, final_form=True):
         result = \
             has_valid_consonants(sound_tuple) and \
             has_valid_vowel(sound_tuple) and \
-            has_valid_accent(sound_tuple)
+            has_valid_tone(sound_tuple)
     else:
         result = \
             has_valid_consonants(sound_tuple) and \
@@ -134,36 +108,36 @@ def has_valid_vowel_non_final(sound_tuple):
 
 def has_valid_vowel(sound_tuple):
     # Check our vowel.
-    # First remove all accents
-    vowel_wo_accent = accent.remove_accent_string(sound_tuple.vowel)
+    # First remove all tones
+    vowel_wo_tone = tone.remove_tone_string(sound_tuple.vowel)
 
     def has_valid_vowel_form():
-        return vowel_wo_accent in VOWELS and not \
+        return vowel_wo_tone in VOWELS and not \
             (sound_tuple.last_consonant != '' and
-                vowel_wo_accent in TERMINAL_VOWELS)
+                vowel_wo_tone in TERMINAL_VOWELS)
 
     def has_valid_ch_ending():
         # 'ch' can only go after a, ê, uê, i, uy, oa
         return not (sound_tuple.last_consonant == 'ch' and
-                    not vowel_wo_accent in
+                    not vowel_wo_tone in
                     ('a', 'ê', 'uê', 'i', 'uy', 'oa'))
 
     def has_valid_c_ending():
         # 'c' can't go after 'i' or 'ơ'
         return not (sound_tuple.last_consonant == 'c' and
-                    vowel_wo_accent in ('i', 'ơ'))
+                    vowel_wo_tone in ('i', 'ơ'))
 
     def has_valid_ng_ending():
         # 'ng' can't go after i, ơ
         return not (sound_tuple.last_consonant == 'ng' and
-                    vowel_wo_accent in ('i', 'ơ'))
+                    vowel_wo_tone in ('i', 'ơ'))
 
     def has_valid_nh_ending():
         # 'nh' can only go after a, ê, uy, i, oa, quy
-        has_y_but_is_not_quynh = vowel_wo_accent == 'y' and \
+        has_y_but_is_not_quynh = vowel_wo_tone == 'y' and \
             sound_tuple.first_consonant != 'qu'
 
-        has_invalid_vowel = not vowel_wo_accent in \
+        has_invalid_vowel = not vowel_wo_tone in \
             ('a', 'ê', 'i', 'uy', 'oa', 'uê', 'y')
 
         return not \
@@ -181,9 +155,9 @@ def has_valid_vowel(sound_tuple):
         # has_valid_nh_ending()
 
 
-def has_valid_accent(sound_tuple):
-    akzent = accent.get_accent_string(sound_tuple.vowel)
+def has_valid_tone(sound_tuple):
+    akzent = tone.get_tone_string(sound_tuple.vowel)
 
-    # These consonants can only go with ACUTE, DOT accents
+    # These consonants can only go with ACUTE, DOT tones
     return not (sound_tuple.last_consonant in ('c', 'p', 't', 'ch') and
-                not akzent in (Accent.ACUTE, Accent.DOT))
+                not akzent in (Tone.ACUTE, Tone.DOT))

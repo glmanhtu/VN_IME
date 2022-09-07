@@ -1,44 +1,19 @@
-# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
-# Bộ gõ song ngữ Anh Việt thông minh
-#
-# Copyright (C) 2012 Long T. Dam <longdt90@gmail.com>
-# Copyright (C) 2012-2013 Trung Ngo <ndtrung4419@gmail.com>
-# Copyright (C) 2013 Duong H. Nguyen <cmpitg@gmail.com>
-#
-# ibus-bogo is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# ibus-bogo is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ibus-bogo.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-"""
-Read the docstring for process_sequence() and process_key() first.
-"""
-
 from __future__ import unicode_literals
 from .validation import is_valid_combination
-from . import utils, accent, mark
+from . import utils, tone, mark
 import logging
 import sys
 import string
 
 
 Mark = mark.Mark
-Accent = accent.Accent
+Tone = tone.Tone
 
 
 class _Action:
     UNDO = 3
     ADD_MARK = 2
-    ADD_ACCENT = 1
+    ADD_TONE = 1
     ADD_CHAR = 0
 
 
@@ -287,7 +262,7 @@ def _get_action(trans):
     Return the action inferred from the transformation `trans`.
     and the parameter going with this action
     An _Action.ADD_MARK goes with a Mark
-    while an _Action.ADD_ACCENT goes with an Accent
+    while an _Action.ADD_TONE goes with an Tone
     """
     # TODO: VIQR-like convention
     mark_action = {
@@ -297,12 +272,12 @@ def _get_action(trans):
         '-': (_Action.ADD_MARK, Mark.BAR),
     }
 
-    accent_action = {
-        '\\': (_Action.ADD_ACCENT, Accent.GRAVE),
-        '/': (_Action.ADD_ACCENT, Accent.ACUTE),
-        '?': (_Action.ADD_ACCENT, Accent.HOOK),
-        '~': (_Action.ADD_ACCENT, Accent.TIDLE),
-        '.': (_Action.ADD_ACCENT, Accent.DOT),
+    tone_action = {
+        '\\': (_Action.ADD_TONE, Tone.GRAVE),
+        '/': (_Action.ADD_TONE, Tone.ACUTE),
+        '?': (_Action.ADD_TONE, Tone.HOOK),
+        '~': (_Action.ADD_TONE, Tone.TIDLE),
+        '.': (_Action.ADD_TONE, Tone.DOT),
     }
 
     if trans[0] in ('<', '+'):
@@ -312,7 +287,7 @@ def _get_action(trans):
     if len(trans) == 2:
         return mark_action[trans[1]]
     else:
-        return accent_action[trans[0]]
+        return tone_action[trans[0]]
 
 
 def _transform(comps, trans):
@@ -328,9 +303,9 @@ def _transform(comps, trans):
             mark.strip(components[1]).lower() in ['oe', 'oa'] and trans == "o^":
         action, parameter = _Action.ADD_CHAR, trans[0]
 
-    if action == _Action.ADD_ACCENT:
-        logging.debug("add_accent(%s, %s)", components, parameter)
-        components = accent.add_accent(components, parameter)
+    if action == _Action.ADD_TONE:
+        logging.debug("add_tone(%s, %s)", components, parameter)
+        components = tone.add_tone(components, parameter)
     elif action == _Action.ADD_MARK and mark.is_valid_mark(components, trans):
         logging.debug("add_mark(%s, %s)", components, parameter)
         components = mark.add_mark(components, parameter)
@@ -338,17 +313,17 @@ def _transform(comps, trans):
         # Handle uơ in "huơ", "thuở", "quở"
         # If the current word has no last consonant and the first consonant
         # is one of "h", "th" and the vowel is "ươ" then change the vowel into
-        # "uơ", keeping case and accent. If an alphabet character is then added
+        # "uơ", keeping case and tone. If an alphabet character is then added
         # into the word then change back to "ươ".
         #
         # NOTE: In the dictionary, these are the only words having this strange
         # vowel so we don't need to worry about other cases.
-        if accent.remove_accent_string(components[1]).lower() == "ươ" and \
+        if tone.remove_tone_string(components[1]).lower() == "ươ" and \
                 not components[2] and components[0].lower() in ["", "h", "th", "kh"]:
-            # Backup accents
-            ac = accent.get_accent_string(components[1])
+            # Backup tones
+            ac = tone.get_tone_string(components[1])
             components[1] = ("u", "U")[components[1][0].isupper()] + components[1][1]
-            components = accent.add_accent(components, ac)
+            components = tone.add_tone(components, ac)
 
     elif action == _Action.ADD_CHAR:
         if trans[0] == "<":
@@ -366,22 +341,22 @@ def _transform(comps, trans):
         else:
             components = utils.append_comps(components, parameter)
             if parameter.isalpha() and \
-                    accent.remove_accent_string(components[1]).lower().startswith("uơ"):
-                ac = accent.get_accent_string(components[1])
+                    tone.remove_tone_string(components[1]).lower().startswith("uơ"):
+                ac = tone.get_tone_string(components[1])
                 components[1] = ('ư',  'Ư')[components[1][0].isupper()] + \
                     ('ơ', 'Ơ')[components[1][1].isupper()] + components[1][2:]
-                components = accent.add_accent(components, ac)
+                components = tone.add_tone(components, ac)
     elif action == _Action.UNDO:
         components = _reverse(components, trans[1:])
 
     if action == _Action.ADD_MARK or (action == _Action.ADD_CHAR and parameter.isalpha()):
-        # If there is any accent, remove and reapply it
+        # If there is any tone, remove and reapply it
         # because it is likely to be misplaced in previous transformations
-        ac = accent.get_accent_string(components[1])
+        ac = tone.get_tone_string(components[1])
 
-        if ac != accent.Accent.NONE:
-            components = accent.add_accent(components, Accent.NONE)
-            components = accent.add_accent(components, ac)
+        if ac != tone.Tone.NONE:
+            components = tone.add_tone(components, Tone.NONE)
+            components = tone.add_tone(components, ac)
 
     logging.debug("After transform: %s", components)
     return components
@@ -406,8 +381,8 @@ def _reverse(components, trans):
         else:
             i = 0
         comps[i] = comps[i][:-1]
-    elif action == _Action.ADD_ACCENT:
-        comps = accent.add_accent(comps, Accent.NONE)
+    elif action == _Action.ADD_TONE:
+        comps = tone.add_tone(comps, Tone.NONE)
     elif action == _Action.ADD_MARK:
         if parameter == Mark.BAR:
             comps[0] = comps[0][:-1] + \
@@ -425,18 +400,18 @@ def _can_undo(comps, trans_list):
     trans_list.
     """
     comps = list(comps)
-    accent_list = list(map(accent.get_accent_char, comps[1]))
+    tone_list = list(map(tone.get_tone_char, comps[1]))
     mark_list = list(map(mark.get_mark_char, utils.join(comps)))
     action_list = list(map(lambda x: _get_action(x), trans_list))
 
     def atomic_check(action):
         """
-        Check if the `action` created one of the marks, accents, or characters
+        Check if the `action` created one of the marks, tones, or characters
         in `comps`.
         """
-        return (action[0] == _Action.ADD_ACCENT and action[1] in accent_list) \
+        return (action[0] == _Action.ADD_TONE and action[1] in tone_list) \
                 or (action[0] == _Action.ADD_MARK and action[1] in mark_list) \
                 or (action[0] == _Action.ADD_CHAR and action[1] == \
-                    accent.remove_accent_char(comps[1][-1]))  # ơ, ư
+                    tone.remove_tone_char(comps[1][-1]))  # ơ, ư
 
     return any(map(atomic_check, action_list))
