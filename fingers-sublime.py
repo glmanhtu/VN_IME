@@ -7,16 +7,30 @@ import os, webbrowser, urllib.parse
 TELEXIFY = True
 
 class SaveOnModifiedListener(sublime_plugin.EventListener):
-    def on_modified_async(self, view):
-        view.run_command('telex_key_pressed')
-
+    def on_modified(self, view):
+        view.run_command('key_pressed')
 
 class TelexKeyPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
+        curr_cursor = self.view.sel()[0]
+        curr_point = curr_cursor.end()
+        self.view.insert(edit, curr_point, 'z')
+        # self.run_command("insert_char", {"text": kargs["keystroke"]})
+        # self.view.run_command('key_pressed')
+
+class InsertCharCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        curr_cursor = self.view.sel()[0]
+        curr_point = curr_cursor.end()
+        self.view.insert(edit, curr_point, text)
+        # self.run_command("insert", {"point": curr_point, "text": text})
+
+class KeyPressedCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
         if not TELEXIFY: return False
 
-        curr_pos = self.view.sel()[0]
-        word_region = self.view.word(curr_pos)
+        curr_cursor = self.view.sel()[0]
+        word_region = self.view.word(curr_cursor)
         origin = self.view.substr(word_region)
         # SEP = "_"
         # parts = self.view.substr(word_region).split(SEP)
