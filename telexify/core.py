@@ -11,7 +11,6 @@ Tone = tone.Tone
 
 
 class _Action:
-    UNDO = 3
     ADD_MARK = 2
     ADD_TONE = 1
     ADD_CHAR = 0
@@ -147,14 +146,6 @@ def process_key(string, key,
 
     if new_comps == comps:
         tmp = list(new_comps)
-
-        # If none of the transformations (if any) work
-        # then this keystroke is probably an undo key.
-        if _can_undo(new_comps, trans_list):
-            # The prefix "_" means undo.
-            for trans in map(lambda x: "_" + x, trans_list):
-                new_comps = _transform(new_comps, trans)
-
         if tmp == new_comps: fallback_sequence += key
         new_comps = utils.append_comps(new_comps, key)
     else:
@@ -236,8 +227,6 @@ def _get_action(trans):
 
     if trans[0] in ('<', '+'):
         return _Action.ADD_CHAR, trans[1]
-    if trans[0] == "_":
-        return _Action.UNDO, trans[1:]
     if len(trans) == 2:
         return mark_action[trans[1]]
     else:
@@ -300,8 +289,6 @@ def _transform(comps, trans):
                 components[1] = ('ư',  'Ư')[components[1][0].isupper()] + \
                     ('ơ', 'Ơ')[components[1][1].isupper()] + components[1][2:]
                 components = tone.add_tone(components, ac)
-    elif action == _Action.UNDO:
-        components = _reverse(components, trans[1:])
 
     if action == _Action.ADD_MARK or (action == _Action.ADD_CHAR and parameter.isalpha()):
         # If there is any tone, remove and reapply it
@@ -314,57 +301,3 @@ def _transform(comps, trans):
 
     # logging.debug("After transform: %s", components)
     return components
-
-
-def _reverse(components, trans):
-    """
-    Reverse the effect of transformation 'trans' on 'components'
-    If the transformation does not affect the components, return the original
-    string.
-    """
-    action, parameter = _get_action(trans)
-    comps = list(components)
-    string = "".join(comps)
-
-    if action == _Action.ADD_CHAR and string[-1].lower() == parameter.lower():
-        if comps[2]:
-            i = 2
-        elif comps[1]:
-            i = 1
-        else:
-            i = 0
-        comps[i] = comps[i][:-1]
-    elif action == _Action.ADD_TONE:
-        comps = tone.add_tone(comps, Tone.NONE)
-    elif action == _Action.ADD_MARK:
-        if parameter == Mark.BAR:
-            comps[0] = comps[0][:-1] + \
-                mark.add_mark_char(comps[0][-1:], Mark.NONE)
-        else:
-            if mark.is_valid_mark(comps, trans):
-                comps[1] = "".join([mark.add_mark_char(c, Mark.NONE)
-                                    for c in comps[1]])
-    return comps
-
-
-def _can_undo(comps, trans_list):
-    """
-    Return whether a components can be undone with one of the transformation in
-    trans_list.
-    """
-    comps = list(comps)
-    tone_list = list(map(tone.get_tone_char, comps[1]))
-    mark_list = list(map(mark.get_mark_char, "".join(comps)))
-    action_list = list(map(lambda x: _get_action(x), trans_list))
-
-    def atomic_check(action):
-        """
-        Check if the `action` created one of the marks, tones, or characters
-        in `comps`.
-        """
-        return (action[0] == _Action.ADD_TONE and action[1] in tone_list) \
-                or (action[0] == _Action.ADD_MARK and action[1] in mark_list) \
-                or (action[0] == _Action.ADD_CHAR and action[1] == \
-                    tone.remove_tone_char(comps[1][-1]))  # ơ, ư
-
-    return any(map(atomic_check, action_list))
