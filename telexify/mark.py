@@ -43,12 +43,11 @@ def add_mark(components, mark):
     if mark == Mark.BAR and comp[0] and comp[0][-1].lower() in FAMILY_D:
         comp[0] = add_mark_at(comp[0], len(comp[0])-1, Mark.BAR)
     else:
-        #remove all marks and tones in vowel part
+        # remove all marks and tones in vowel part
         raw_vowel = tone.add_tone(comp, Tone.NONE)[1].lower()
         raw_vowel = "".join([add_mark_char(c, Mark.NONE) for c in raw_vowel])
         if mark == Mark.HAT:
-            pos = max(raw_vowel.find("a"), raw_vowel.find("o"),
-                      raw_vowel.find("e"))
+            pos = max(raw_vowel.find("a"), raw_vowel.find("o"), raw_vowel.find("e"))
             comp[1] = add_mark_at(comp[1], pos, Mark.HAT)
         elif mark == Mark.BREVE:
             if raw_vowel != "ua":
@@ -74,10 +73,12 @@ def add_mark_at(string, index, mark):
     Add mark to the index-th character of the given string. Return the new string after applying change.
     Notice: index > 0
     """
-    if index == -1:
-        return string
-    # Python can handle the case which index is out of range of given string
-    return string[:index] + add_mark_char(string[index], mark) + string[index+1:]
+    if index == -1: return string
+    # `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
+    if mark == Mark.HAT and string[index:index+2] in ('oo', 'ee', 'aa'):
+        return string[:index] + add_mark_char(string[index], mark) + string[index+2:]
+    else:
+        return string[:index] + add_mark_char(string[index], mark) + string[index+1:]
 
 
 def add_mark_char(char, mark):

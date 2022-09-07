@@ -164,39 +164,12 @@ def _get_transformation_list(key, im, fallback_sequence):
     """
     Return the list of transformations inferred from the entered key. The
     map between transform types and keys is given TELEX_DEFINITION
+    If entered key is not in im, return "+key", add key to current text
     """
-
-    # if entered key is not in im, return "+key", meaning appending the entered key to current text
-    # if key in im:
-    #     lkey = key
-    # else:
-    #     lkey = key.lower()
-
     lkey = key.lower()
-
     if lkey in im:
-        if isinstance(im[lkey], list):
-            trans_list = im[lkey]
-        else:
-            trans_list = [im[lkey]]
-
-        for i, trans in enumerate(trans_list):
-            if trans[0] == '<' and key.isalpha():
-                trans_list[i] = trans[0] + \
-                    utils.change_case(trans[1], int(key.isupper()))
-
-        if trans_list == ['_']:
-            if len(fallback_sequence) >= 2:
-                # TODO Use takewhile()/dropwhile() to process the last IM keypress
-                # instead of assuming it's the last key in fallback_sequence.
-                t = list(map(lambda x: "_" + x,
-                             _get_transformation_list(fallback_sequence[-2], im,
-                                                     fallback_sequence[:-1])))
-                # print(t)
-                trans_list = t
-            # else:
-            #     trans_list = ['+' + key]
-
+        if isinstance(im[lkey], list): trans_list = im[lkey]
+        else: trans_list = [im[lkey]]
         return trans_list
     else:
         return ['+' + key]
@@ -225,7 +198,7 @@ def _get_action(trans):
         '.': (_Action.ADD_TONE, Tone.DOT),
     }
 
-    if trans[0] in ('<', '+'):
+    if trans[0] == '+':
         return _Action.ADD_CHAR, trans[1]
     if len(trans) == 2:
         return mark_action[trans[1]]
@@ -244,11 +217,12 @@ def _transform(comps, trans):
     if action == _Action.ADD_MARK and \
             components[2] == "" and \
             mark.strip(components[1]).lower() in ['oe', 'oa'] and trans == "o^":
-        action, parameter = _Action.ADD_CHAR, trans[0]
+        action, parameter = _Action.ADD_CHAR, trans[0] # ko bỏ dấu `^` cho `oe, oa`
 
     if action == _Action.ADD_TONE:
         # logging.debug("add_tone(%s, %s)", components, parameter)
         components = tone.add_tone(components, parameter)
+        # 
     elif action == _Action.ADD_MARK and mark.is_valid_mark(components, trans):
         # logging.debug("add_mark(%s, %s)", components, parameter)
         components = mark.add_mark(components, parameter)

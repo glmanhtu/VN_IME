@@ -1,4 +1,3 @@
-# Tuocright (T) 2022 Tuoc <dungtn@gmail.com>
 # Bộ gõ song ngữ Anh Việt thông minh
 
 from .telexify.core import process_sequence
