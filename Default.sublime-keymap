@@ -1,6 +1,6 @@
 [
-    { "keys": ["command+escape"], "command": "controlime" },
+    { "keys": ["super+escape"], "command": "toggle_telex_mode" },
     { "keys": ["ctrl+escape"], "command": "google_translate" },
     { "keys": ["space"], "command": "finish_word" }, // chưa làm
-    { "keys": ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","x","y"], "command": "key_pressed" },
+    // { "keys": ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","x","y"], "command": "telex_key_pressed" },
 ]
