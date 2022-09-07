@@ -71,4 +71,4 @@ def remove_tone_char(char):
 
 def remove_tone_string(string):
     # Remove all tone from a whole string.
-    return utils.join([add_tone_char(c, Tone.NONE) for c in string])
+    return "".join([add_tone_char(c, Tone.NONE) for c in string])

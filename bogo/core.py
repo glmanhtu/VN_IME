@@ -209,7 +209,7 @@ def process_key(string, key,
             not is_valid_combination(new_comps, final_form=False):
         result = fallback_sequence, fallback_sequence
     else:
-        result = utils.join(new_comps), fallback_sequence
+        result = "".join(new_comps), fallback_sequence
 
     return result
 
@@ -371,7 +371,7 @@ def _reverse(components, trans):
 
     action, parameter = _get_action(trans)
     comps = list(components)
-    string = utils.join(comps)
+    string = "".join(comps)
 
     if action == _Action.ADD_CHAR and string[-1].lower() == parameter.lower():
         if comps[2]:
@@ -401,7 +401,7 @@ def _can_undo(comps, trans_list):
     """
     comps = list(comps)
     tone_list = list(map(tone.get_tone_char, comps[1]))
-    mark_list = list(map(mark.get_mark_char, utils.join(comps)))
+    mark_list = list(map(mark.get_mark_char, "".join(comps)))
     action_list = list(map(lambda x: _get_action(x), trans_list))
 
     def atomic_check(action):

@@ -45,7 +45,7 @@ def add_mark(components, mark):
     else:
         #remove all marks and tones in vowel part
         raw_vowel = tone.add_tone(comp, Tone.NONE)[1].lower()
-        raw_vowel = utils.join([add_mark_char(c, Mark.NONE) for c in raw_vowel])
+        raw_vowel = "".join([add_mark_char(c, Mark.NONE) for c in raw_vowel])
         if mark == Mark.HAT:
             pos = max(raw_vowel.find("a"), raw_vowel.find("o"),
                       raw_vowel.find("e"))
@@ -55,7 +55,7 @@ def add_mark(components, mark):
                 comp[1] = add_mark_at(comp[1], raw_vowel.find("a"), Mark.BREVE)
         elif mark == Mark.HORN:
             if raw_vowel in ("uo", "uoi", "uou"):
-                comp[1] = utils.join([add_mark_char(c, Mark.HORN) for c in comp[1][:2]]) + comp[1][2:]
+                comp[1] = "".join([add_mark_char(c, Mark.HORN) for c in comp[1][:2]]) + comp[1][2:]
             elif raw_vowel == "oa":
                 comp[1] = add_mark_at(comp[1], 1, Mark.HORN)
             else:
@@ -148,7 +148,7 @@ def remove_mark_char(char):
 
 
 def remove_mark_string(string):
-    return utils.join([remove_mark_char(c) for c in string])
+    return "".join([remove_mark_char(c) for c in string])
 
 
 def strip(string):

@@ -5,33 +5,20 @@ VOWELS = "àáảãạaằắẳẵặăầấẩẫậâèéẻẽẹeềếể
          "òóỏõọoồốổỗộôờớởỡợơùúủũụuừứửữựưỳýỷỹỵy"
 
 
-def join(alist):
-    return "".join(alist)
-
-
 def is_vowel(char):
     char = char.lower()
     return char in VOWELS
 
 
 def change_case(string, case):
-    """
-    Helper: Return new string obtained from change the given string to
-    desired case.
-
-    Args
-        string
-        case - 0: lower, 1: upper
-    """
     return string.upper() if case else string.lower()
 
 
 def append_comps(comps, char):
     """
-    Append a character to `comps` following this rule: a vowel is added to the
-    vowel part if there is no last consonant, else to the last consonant part;
-    a consonant is added to the first consonant part if there is no vowel, and
-    to the last consonant part if the vowel part is not empty.
+    Đặt ký tự vào bộ phận tương ứng trong âm tiết (component):
+    - ký tự là nguyên âm thì bỏ vào âm giữa nếu ko có phụ âm cuối
+    - ký tự phụ âm thì bỏ vào âm đầu nếu âm giữa chưa có gì, ngược lại thì bỏ vào âm cuối
 
     >>> transform(['', '', ''])
     ['c', '', '']
