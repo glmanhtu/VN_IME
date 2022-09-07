@@ -75,7 +75,7 @@ Tạo 3 loại nodes:
 => IMF Trie :D
 
 
-### Trigram Map & Filter
+### N-gram Map & Filter
 
 https://github.com/hexops/fastfilter#benchmarks
 
@@ -88,6 +88,7 @@ TOTAL: 41MB,
 ```
 => Mỗi lookup cần đối chiếu với 2 filters và 1 hash_count. Cách này cân bằng giữa MEM và CPU!
 
+#### Tiết kiệm bộ nhớ cho môi trường Web
 
 Loại count = 1 và quantization về khoảng 8 nhóm để tiết kiệm MEM ta được:
 ```
@@ -120,18 +121,6 @@ d/ count=12..25 => `  601_206` 4-grams => `1.3 mb BinaryFuse(u16)`
 e/ count=25..80 => `  322_523` 4-grams => `0.7 mb BinaryFuse(u16)`
 f/ remain       => `  121_206` 4-grams => `0.3 mb BinaryFuse(u16)`
 TOTAL: 16.4 MB
-```
-
-#### Chiến thuật load n-gram filters
-
-Bé load trước, lớn load sau, load song song 3 filter cùng loại 1 lúc
-```
-2f 3f 4f =  1.0 mb
-2e 3e 4e =  1.8 mb
-2d 3d 4d =  2.9 mb
-2c 3c 4c =  5.3 mb
-2a 3a 4a =  8.7 mb
-2b 3b 4b = 12.0 mb
 ```
 
 #### Cách tính điểm khi so khớp với chuỗi tokens đầu vào
