@@ -10,11 +10,13 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 - Học https://github.com/futureprogrammer360/Dictionary để hiện items đề xuất
 
+- Khi viết code chỉ gõ dc TV trong comment và string.
+
 ## DONE
 
 - `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
 
-- Chỉ convert sang TV khi dùng các ký tự `qwrsfjx` hoặc `dd`
+- Chỉ convert sang TV khi current position là ký tự `qwrsfjxd`
 
 - Dùng `q` để bỏ dấu `ô ê â` => handle `moon teen boong` well
 
