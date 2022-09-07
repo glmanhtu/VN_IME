@@ -10,13 +10,15 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         view.run_command('key_pressed')
 
+
 class TelexKeyPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         curr_cursor = self.view.sel()[0]
-        curr_point = curr_cursor.end()
-        self.view.insert(edit, curr_point, 'z')
-        # self.run_command("insert_char", {"text": kargs["keystroke"]})
-        # self.view.run_command('key_pressed')
+        word_region = self.view.word(curr_cursor)
+        origin = self.view.substr(word_region) + kargs["keystroke"]
+        self.view.run_command("replace_current", {"string":origin})
+        return True
+
 
 class InsertCharCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -25,10 +27,10 @@ class InsertCharCommand(sublime_plugin.TextCommand):
         self.view.insert(edit, curr_point, text)
         # self.run_command("insert", {"point": curr_point, "text": text})
 
+
 class KeyPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         if not TELEXIFY: return False
-
         curr_cursor = self.view.sel()[0]
         word_region = self.view.word(curr_cursor)
         origin = self.view.substr(word_region)
@@ -37,18 +39,15 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
         # prev = parts[0]
         # origin = parts[-1]
 
-        final = self.to_vi_utf8(origin)
-        if not final or final == origin: return False
-        # if not final or final == prev: return False
+        last_char = origin[-1].lower()
+        if last_char not in "qwrsfjxd": return False
+        final = process_sequence(origin)
+        if final == origin: return False
+        # if final == prev: return False
         # if final != origin: final = SEP.join((final, origin))
         self.view.end_edit(edit)
         self.view.run_command("replace_current", {"string":final})
         return True
-
-    def to_vi_utf8(self, word):
-        last_char = word[-1].lower()
-        if last_char in "qwrsfjxd": return process_sequence(word)
-        return False
 
 
 class ReplaceCurrentCommand(sublime_plugin.TextCommand):
