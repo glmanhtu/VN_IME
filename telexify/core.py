@@ -17,23 +17,18 @@ class _Action:
     ADD_CHAR = 0
 
 
-def get_telex_definition(w_shorthand=False):
-    """Create a definition dictionary for the TELEX input method
-    Returns a dictionary to be passed into process_key().
-    """
-    return {
-        # Ko dùng aa => â, oo => ô, ee => ê để tránh lẫn với tiếng Anh (teen, moon ..)
-        # Chuyển sang dùng `q` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
-        "q": ["a^", "o^", "e^"], # dùng `q` thay cho `z` để ko chuyển tay quá xa
-        "w": ["u*", "o*", "a+"],
-        "d": "d-",
-        "f": "\\",
-        "s": "/",
-        "r": "?",
-        "x": "~",
-        "j": ".",
-    }
-    return telex
+TELEX_DEFINITION = {
+    # Ko dùng aa => â, oo => ô, ee => ê để tránh lẫn với tiếng Anh (teen, moon ..)
+    # Chuyển sang dùng `q` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
+    "q": ["a^", "o^", "e^"], # dùng `q` thay cho `z` để ko chuyển tay quá xa
+    "w": ["u*", "o*", "a+"],
+    "d": "d-",
+    "f": "\\",
+    "s": "/",
+    "r": "?",
+    "x": "~",
+    "j": ".",
+}
 
 
 def _accepted_chars(rules):
@@ -65,7 +60,7 @@ def process_sequence(sequence,
     raw = result
     result_parts = []
     if rules is None:
-        rules = get_telex_definition()
+        rules = TELEX_DEFINITION
 
     accepted_chars = _accepted_chars(rules)
 
@@ -97,7 +92,7 @@ def process_key(string, key,
         key: The keystroke.
         fallback_sequence: The previous keystrokes.
         rules (optional): A dictionary listing
-            transformation rules. Defaults to get_telex_definition().
+            transformation rules. Defaults to TELEX_DEFINITION.
         skip_non_vietnamese (optional): Whether to skip results that
             doesn't seem like Vietnamese. Defaults to True.
 
@@ -110,12 +105,6 @@ def process_key(string, key,
 
     >>> process_key('a', 'a', 'a')
     (â, aa)
-
-    Note that when a key is an undo key, it won't get appended to
-    `fallback_sequence`.
-
-    >>> process_key('â', 'a', 'aa')
-    (aa, aa)
 
     `rules` is a dictionary that maps keystrokes to
     their effect string. The effects can be one of the following:
@@ -131,8 +120,6 @@ def process_key(string, key,
     '?': hook (hỏi), affect an existing vowel
     '~': tilde (ngã), affect an existing vowel
     '.': dot (nặng), affect an existing vowel
-    '<ư': append ư
-    '<ơ': append ơ
 
     A keystroke entry can have multiple effects, in which case the
     dictionary entry's value should be a list of the possible
@@ -145,12 +132,9 @@ def process_key(string, key,
         return string + key, fallback_sequence + key
 
     if rules is None:
-        rules = get_telex_definition()
+        rules = TELEX_DEFINITION
 
     comps = utils.separate(string)
-
-    # if not _is_processable(comps):
-    #     return default_return()
 
     # Find all possible transformations this keypress can generate
     trans_list = _get_transformation_list(
@@ -171,36 +155,7 @@ def process_key(string, key,
             for trans in map(lambda x: "_" + x, trans_list):
                 new_comps = _transform(new_comps, trans)
 
-            # Undoing the w key with the TELEX input method with the
-            # w:<ư extension requires some care.
-            #
-            # The input (ư, w) should be undone as w
-            # on the other hand, (ư, uw) should return uw.
-            #
-            # _transform() is not aware of the 2 ways to generate
-            # ư in TELEX and always think ư was created by uw.
-            # Therefore, after calling _transform() to undo ư,
-            # we always get ['', 'u', ''].
-            #
-            # So we have to clean it up a bit.
-            def is_telex_like():
-                return '<ư' in rules["w"]
-
-            def undone_vowel_ends_with_u():
-                return new_comps[1] and new_comps[1][-1].lower() == "u"
-
-            def not_first_key_press():
-                return len(fallback_sequence) >= 1
-
-            if is_telex_like() and \
-                    not_first_key_press() and \
-                    undone_vowel_ends_with_u():
-                # The vowel part of new_comps is supposed to end with
-                # u now. That u should be removed.
-                new_comps[1] = new_comps[1][:-1]
-
-        if tmp == new_comps:
-            fallback_sequence += key
+        if tmp == new_comps: fallback_sequence += key
         new_comps = utils.append_comps(new_comps, key)
     else:
         fallback_sequence += key
@@ -217,16 +172,15 @@ def process_key(string, key,
 def _get_transformation_list(key, im, fallback_sequence):
     """
     Return the list of transformations inferred from the entered key. The
-    map between transform types and keys is given by module
-    bogo_config (if exists) or by variable simple_telex_im
-
-    if entered key is not in im, return "+key", meaning appending
-    the entered key to current text
+    map between transform types and keys is given TELEX_DEFINITION
     """
+
+    # if entered key is not in im, return "+key", meaning appending the entered key to current text
     # if key in im:
     #     lkey = key
     # else:
     #     lkey = key.lower()
+
     lkey = key.lower()
 
     if lkey in im:
@@ -294,7 +248,7 @@ def _transform(comps, trans):
     """
     Transform the given string with transform type trans
     """
-    logging.debug("== In _transform(%s, %s) ==", comps, trans)
+    # logging.debug("== In _transform(%s, %s) ==", comps, trans)
     components = list(comps)
 
     action, parameter = _get_action(trans)
@@ -304,10 +258,10 @@ def _transform(comps, trans):
         action, parameter = _Action.ADD_CHAR, trans[0]
 
     if action == _Action.ADD_TONE:
-        logging.debug("add_tone(%s, %s)", components, parameter)
+        # logging.debug("add_tone(%s, %s)", components, parameter)
         components = tone.add_tone(components, parameter)
     elif action == _Action.ADD_MARK and mark.is_valid_mark(components, trans):
-        logging.debug("add_mark(%s, %s)", components, parameter)
+        # logging.debug("add_mark(%s, %s)", components, parameter)
         components = mark.add_mark(components, parameter)
 
         # Handle uơ in "huơ", "thuở", "quở"
@@ -358,7 +312,7 @@ def _transform(comps, trans):
             components = tone.add_tone(components, Tone.NONE)
             components = tone.add_tone(components, ac)
 
-    logging.debug("After transform: %s", components)
+    # logging.debug("After transform: %s", components)
     return components
 
 
@@ -368,7 +322,6 @@ def _reverse(components, trans):
     If the transformation does not affect the components, return the original
     string.
     """
-
     action, parameter = _get_action(trans)
     comps = list(components)
     string = "".join(comps)
