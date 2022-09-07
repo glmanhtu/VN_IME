@@ -17,15 +17,14 @@ class TelexKeyPressedCommand(sublime_plugin.TextCommand):
         word_region = self.view.word(curr_cursor)
         origin = self.view.substr(word_region) + kargs["keystroke"]
         self.view.run_command("replace_current", {"string":origin})
+        # self.view.insert(edit, curr_cursor.end(), origin)
+        # self.run_command("insert", {"point": curr_point, "text": origin})
         return True
 
 
 class InsertCharCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         curr_cursor = self.view.sel()[0]
-        curr_point = curr_cursor.end()
-        self.view.insert(edit, curr_point, text)
-        # self.run_command("insert", {"point": curr_point, "text": text})
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
@@ -34,17 +33,11 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
         curr_cursor = self.view.sel()[0]
         word_region = self.view.word(curr_cursor)
         origin = self.view.substr(word_region)
-        # SEP = "_"
-        # parts = self.view.substr(word_region).split(SEP)
-        # prev = parts[0]
-        # origin = parts[-1]
 
         last_char = origin[-1].lower()
         if last_char not in "qwrsfjxd": return False
         final = process_sequence(origin)
         if final == origin: return False
-        # if final == prev: return False
-        # if final != origin: final = SEP.join((final, origin))
         self.view.end_edit(edit)
         self.view.run_command("replace_current", {"string":final})
         return True
@@ -77,5 +70,6 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
             selection = self.view.substr(region)  # Text selected
         if not selection: return
         url = "https://translate.google.com/?hl=vi&sl=auto&tl=vi&text="
+        # url = "https://translate.google.com/?sl=en&tl=vi&text="
         url = url + urllib.parse.quote(selection)
         webbrowser.open(url)

@@ -2,6 +2,7 @@
     { "keys": ["super+escape"], "command": "toggle_telex_mode" },
     { "keys": ["ctrl+escape"], "command": "google_translate" },
     { "keys": ["space"], "command": "finish_word" }, // chưa làm
+    // `telex_key_pressed` chưa hiển thị dc key vừa gõ
     // { "keys": ["z"], "command": "telex_key_pressed", "args": {"keystroke": "z" } },
     // { "keys": ["a"], "command": "telex_key_pressed", "args": {"keystroke": "a" } },
     // { "keys": ["b"], "command": "telex_key_pressed", "args": {"keystroke": "b" } },
