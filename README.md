@@ -10,7 +10,7 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 ## DONE
 
-- Hiển thị nguyên gốc
+- Hiển thị nguyên gốc, TV hiển thị ở popup, nhấn `space` tự động chọn TV, `tab` bỏ qua
 
 - `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
 
