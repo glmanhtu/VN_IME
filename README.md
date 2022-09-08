@@ -33,9 +33,7 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 - Hiển thị nguyên gốc, TV hiển thị ở popup, nhấn `space` tự động chọn TV, `tab` bỏ qua
 
-- `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
-
-- Dùng `q` để bỏ dấu `ô ê â` => handle `moon teen boong` well
+- Chọn đoạn text tiếng Anh, nhấn `command+esc` để google translate. Tiện ích cho việc dịch văn bản.
 
 - Tìm cách bind zig code vào python
   https://github.com/gwenzek/fastBPE/blob/master/test/test_zig.py
