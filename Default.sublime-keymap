@@ -4,5 +4,6 @@
     { "keys": ["super+shift"], "command": "toggle_telex_mode" },
     { "keys": ["shift+super"], "command": "toggle_telex_mode" },
     { "keys": ["primary+z"], "command": "undo_function" },
-    { "keys": [" "], "command": "space_pressed" },
+    { "keys": [" "], "command": "space_pressed" }, // chuyển hóa
+    { "keys": ["tab"], "command": "tab_pressed" }, // ko chuyển hóa
 ]
