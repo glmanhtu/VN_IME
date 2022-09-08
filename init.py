@@ -14,9 +14,11 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        region = self.view.sel()[0]
+        global CURR_REGION
+        region = self.view.sel()[0] # [0] => fist cursor
         region = sublime.Region(CURR_REGION.begin(), region.end())
-        self.view.replace(edit, region, FINAL)
+        self.view.replace(edit, region, FINAL + " ")
+        CURR_REGION = False
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
