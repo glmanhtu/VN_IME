@@ -5,57 +5,49 @@ import sublime, sublime_plugin
 import os, webbrowser, urllib.parse
 
 TELEXIFY = True
+CURR_REGION = False
+FINAL = ""
 
 class SaveOnModifiedListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         view.run_command('key_pressed')
 
-
-class TelexKeyPressedCommand(sublime_plugin.TextCommand):
+class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        curr_cursor = self.view.sel()[0]
-        word_region = self.view.word(curr_cursor)
-        origin = self.view.substr(word_region) + kargs["keystroke"]
-        self.view.run_command("replace_current", {"string":origin})
-        # self.view.insert(edit, curr_cursor.end(), origin)
-        # self.run_command("insert", {"point": curr_point, "text": origin})
-        return True
-
-
-class InsertCharCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        curr_cursor = self.view.sel()[0]
+        region = sublime.Region(CURR_REGION.begin(), CURR_REGION.end())
+        self.view.replace(edit, CURR_REGION, FINAL)
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # Bỏ qua nếu chế độ gõ Telex đang tắt
         if not TELEXIFY: return False
+        self.view.hide_popup()
 
         curr_cursor = self.view.sel()[0]
         # Bỏ qua nếu có selected text
         if curr_cursor.begin() != curr_cursor.end(): return False
-
+            
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
         origin = self.view.substr(curr_region)
 
-        # Bỏ qua nếu ký tự cuối ko có tác dụng chuyển ngữ
-        if origin[-1].lower() not in "qwrsfjxd": return False
+        global CURR_REGION
+        global FINAL
 
-        final = process_sequence(origin)
-        if final == origin: return False
-        self.view.end_edit(edit)
-        self.view.run_command("replace_current", {"string":final})
-        return True
+        if CURR_REGION and origin[-1] == " ": # space pressed
+            self.view.end_edit(edit)
+            self.view.run_command("finish_word")
 
-
-class ReplaceCurrentCommand(sublime_plugin.TextCommand):
-    def run(self, edit, string):
-        curr_cursor = self.view.sel()[0]
-        word_region = self.view.word(curr_cursor)
-        curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
-        self.view.replace(edit, curr_region, string)
+        final = process_sequence(origin); #print(final)
+        if final == origin:
+            CURR_REGION = False
+            self.view.hide_popup()
+        else:
+            CURR_REGION = curr_region
+            FINAL = final
+            loc = curr_region.end() - len(final)
+            self.view.show_popup(FINAL, location=loc)
 
 
 class ToggleTelexModeCommand(sublime_plugin.TextCommand):

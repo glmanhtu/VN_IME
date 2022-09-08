@@ -6,17 +6,13 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 ```
 ## DOING
 
-- Hiển thị raw string vả telexifed string. ấn `space` để chọn đề xuất mặc định, ấn `[`, `]` để chọn trong danh sách đề xuất. https://www.sublimetext.com/docs/key_bindings.html
-
-- Học https://github.com/futureprogrammer360/Dictionary để hiện items đề xuất
-
 - Khi viết code chỉ gõ dc TV trong comment và string.
 
 ## DONE
 
-- `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
+- Hiển thị nguyên gốc
 
-- Chỉ convert sang TV khi current position là ký tự `qwrsfjxd`
+- `eeq`=>`ê` để sửa sai nhanh khi gõ theo thói quen cũ `ee`=>`ê`, tương tự cho oo, aa
 
 - Dùng `q` để bỏ dấu `ô ê â` => handle `moon teen boong` well
 
