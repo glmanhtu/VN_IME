@@ -15,7 +15,7 @@
     { "keys": ["]"], "command": "finish_word", "args": {"key": "]" }},
     { "keys": ["}"], "command": "finish_word", "args": {"key": "}" }},
     // { "keys": [""], "command": "finish_word", "args": {"key": "" }},
-    { "keys": ["enter"], "command": "finish_word", "args": {"key": "\n" }},
+    // { "keys": ["enter"], "command": "finish_word", "args": {"key": "\n" }},
     // { "keys": ["z"], "command": "key_pressed", "args": {"key": "z" } },
     // { "keys": ["a"], "command": "key_pressed", "args": {"key": "a" } },
     // { "keys": ["b"], "command": "key_pressed", "args": {"key": "b" } },
