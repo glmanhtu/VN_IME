@@ -103,11 +103,13 @@ def plugin_loaded():
     # Dict data https://github.com/catusf/tudien/blob/master/dict
     # cd /Applications/Sublime\ Text.app/Contents/MacOS
     # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
+    # cd ~/Library/Application\ Support/Sublime\ Text/Packages
+    # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
     global EV_DICT
     t = open(os.getcwd() + "/TudienAnhVietBeta.tab", mode="r", encoding="utf-8").read()
     for w in t.split("\n"):
         ev = w.split("\t")
-        EV_DICT[ev[0]] = ev[1]
+        if len(ev) >= 2: EV_DICT[ev[0]] = ev[1]
     print("TEST EV_DICT: visually => " + EV_DICT["visually"])
 
 
