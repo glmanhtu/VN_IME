@@ -1,6 +1,6 @@
 Gõ tiếng Việt thông minh trên Sublime Text. Nhấn phím `esc` để bật tắt chế độ gõ tiếng Việt.
 
-
+https://raw.githubusercontent.com/telexyz/fingers-sublime/master/intro.mp4
 
 Cài đặt locally:
 ```
