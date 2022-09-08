@@ -12,7 +12,7 @@ Sau đó vào `Package Control: Install Package` và tìm `fingers-sublime` và 
 
 ### Một số phím tắt cài sẵn: 
 
-- `command+shift` hoặc `windows+shift` để tắt / bật chết độ gõ.
+- `command+shift` hoặc `windows+shift` để tắt / bật chế độ gõ.
 
 - Lựa chọn đoạn text tiếng Anh rồi `command+esc` hoặc `windows+esc` để dịch google.
 
