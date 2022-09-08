@@ -2,7 +2,6 @@ Gõ tiếng Việt thông minh trên Sublime Text. Nhấn phím `esc` để bậ
 
 https://user-images.githubusercontent.com/8133/189083062-0818c754-485d-4ade-a808-059f09d41d58.mp4
 
-
 Cài đặt locally:
 ```
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
