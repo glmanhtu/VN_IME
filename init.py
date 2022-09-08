@@ -14,8 +14,9 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        region = sublime.Region(CURR_REGION.begin(), CURR_REGION.end())
-        self.view.replace(edit, CURR_REGION, FINAL)
+        region = self.view.sel()[0]
+        region = sublime.Region(CURR_REGION.begin(), region.end())
+        self.view.replace(edit, region, FINAL)
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
@@ -28,18 +29,22 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
         # Bỏ qua nếu có selected text
         if curr_cursor.begin() != curr_cursor.end(): return False
             
-        word_region = self.view.word(curr_cursor)
-        curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
-        origin = self.view.substr(curr_region)
-
         global CURR_REGION
         global FINAL
 
-        if CURR_REGION and origin[-1] == " ": # space pressed
+        curr_pos = curr_cursor.begin()
+        last_char = self.view.substr(sublime.Region(curr_pos - 1, curr_pos))
+        # print(curr_pos, "/"+last_char+"/")
+        if CURR_REGION and last_char == " ": # space pressed
             self.view.end_edit(edit)
             self.view.run_command("finish_word")
 
+        word_region = self.view.word(curr_cursor)
+        curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
+
+        origin = self.view.substr(curr_region)
         final = process_sequence(origin); #print(final)
+
         if final == origin:
             CURR_REGION = False
             self.view.hide_popup()
