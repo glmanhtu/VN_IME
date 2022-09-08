@@ -79,3 +79,11 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
         if not selection: return
         webbrowser.open("https://translate.google.com/?hl=vi&sl=auto&tl=vi&text=" + \
             urllib.parse.quote(selection))
+
+
+class UndoFunctionCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        global TELEXIFY
+        tmp = TELEXIFY
+        TELEXIFY = False
+        self.window.run_command("undo")

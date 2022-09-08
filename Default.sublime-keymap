@@ -1,6 +1,7 @@
-[
-    { "keys": ["super+escape"], "command": "toggle_telex_mode" },
-    { "keys": ["ctrl+escape"], "command": "google_translate" },
+[ // https://www.sublimetext.com/docs/key_bindings.html#key-names
+    { "keys": ["super+escape"], "command": "google_translate" },
+    { "keys": ["super+shift"], "command": "toggle_telex_mode" },
+    { "keys": ["primary+z"], "command": "undo_function" },
     { "keys": ["space"], "command": "finish_word" }, // chưa làm
     // `telex_key_pressed` chưa hiển thị dc key vừa gõ
     // { "keys": ["z"], "command": "telex_key_pressed", "args": {"keystroke": "z" } },
