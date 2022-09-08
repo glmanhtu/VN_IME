@@ -18,8 +18,11 @@ class _Action:
 
 TELEX_DEFINITION = {
     # Ko dùng aa => â, oo => ô, ee => ê để tránh lẫn với tiếng Anh (teen, moon ..)
+    "a": "a^",
+    "o": "o^",
+    "e": "e^",
     # Chuyển sang dùng `q` để bỏ dấu `â, ê, ô` hệt như dùng `w` để bỏ dấu `ơ, ư, ă`
-    "q": ["a^", "o^", "e^"], # dùng `q` thay cho `z` để ko chuyển tay quá xa
+    # "q": ["a^", "o^", "e^"], # dùng `q` thay cho `z` để ko chuyển tay quá xa
     "w": ["u*", "o*", "a+"],
     "d": "d-",
     "f": "\\",
