@@ -12,13 +12,17 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         view.run_command('key_pressed')
 
-class FinishWordCommand(sublime_plugin.TextCommand):
+class SpacePressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         global CURR_REGION
-        region = self.view.sel()[0] # [0] => fist cursor
-        region = sublime.Region(CURR_REGION.begin(), region.end())
-        self.view.replace(edit, region, FINAL + " ")
-        CURR_REGION = False
+        if CURR_REGION:
+            region = self.view.sel()[0] # [0] => fist cursor
+            region = sublime.Region(CURR_REGION.begin(), region.end())
+            self.view.replace(edit, region, FINAL + " ")
+            CURR_REGION = False
+        else:
+            region = self.view.sel()[0] # [0] => fist cursor
+            self.view.insert(edit, region.begin(), " ")
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
@@ -33,13 +37,6 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
             
         global CURR_REGION
         global FINAL
-
-        curr_pos = curr_cursor.begin()
-        last_char = self.view.substr(sublime.Region(curr_pos - 1, curr_pos))
-        # print(curr_pos, "/"+last_char+"/")
-        if CURR_REGION and last_char == " ": # space pressed
-            self.view.end_edit(edit)
-            self.view.run_command("finish_word")
 
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
