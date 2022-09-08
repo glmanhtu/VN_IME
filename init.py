@@ -96,6 +96,7 @@ class UndoFunctionCommand(sublime_plugin.WindowCommand):
         global TELEXIFY
         TELEXIFY = False
         self.window.run_command("undo")
+        TELEXIFY = True
 
 import os, re
 def plugin_loaded():
@@ -118,22 +119,14 @@ class DictionaryEventListener(sublime_plugin.EventListener):
         word = view.substr(view.word(point))
         if not word: return
 
-        word = clean_text(word.lower())
+        try: word = re.compile(r"[a-zA-Z]+").search(word.lower()).group()
+        except AttributeError: return # No match in text
+
         content = EV_DICT[word]
         if not content: return
-
-        word = "<b>" + word + "</b><br>"
         view.show_popup(
-            word+content,
+            "<b>" + word + "</b><br> " + content,
             location=point,
             max_width=800,
             max_height=400,
         )
-
-def clean_text(text: str) -> str:
-    try:
-        text = re.compile(r"[a-zA-Z]+").search(text).group()
-        # text = re.compile(r"[a-zA-Z0-9]+").search(text).group()
-    except AttributeError:  # No match in text
-        return ""
-    return text
