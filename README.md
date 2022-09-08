@@ -5,6 +5,7 @@ https://user-images.githubusercontent.com/8133/189085556-2d5768fb-dda0-424d-9d41
 Cài đặt thông thường:
 
 ![](sublime-package-repo.jpg)
+
 Add `https://github.com/telexyz/fingers-sublime.git`
 
 Sau đó vào `Package Control: Install Package` và tìm `fingers-sublime` và cài đặt.
