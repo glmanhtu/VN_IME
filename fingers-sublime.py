@@ -84,6 +84,5 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
 class UndoFunctionCommand(sublime_plugin.WindowCommand):
     def run(self):
         global TELEXIFY
-        tmp = TELEXIFY
         TELEXIFY = False
         self.window.run_command("undo")
