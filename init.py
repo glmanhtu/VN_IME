@@ -19,23 +19,23 @@ class TabPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         global CURR_REGION
         region = first_cursor(self.view)
-        if CURR_REGION:
+        if TELEXIFY and CURR_REGION:
             self.view.insert(edit, region.begin(), " ")
             CURR_REGION = False
         else:
             self.view.insert(edit, region.begin(), "\t")
 
-class SpacePressedCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
+class FinishWordCommand(sublime_plugin.TextCommand):
+    def run(self, edit, key):
         global CURR_REGION
-        if CURR_REGION:
+        if TELEXIFY and CURR_REGION:
             region = first_cursor(self.view)
             region = sublime.Region(CURR_REGION.begin(), region.end())
-            self.view.replace(edit, region, FINAL + " ")
+            self.view.replace(edit, region, FINAL + key)
             CURR_REGION = False
         else:
             region = first_cursor(self.view)
-            self.view.insert(edit, region.begin(), " ")
+            self.view.insert(edit, region.begin(), key)
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
