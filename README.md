@@ -1,5 +1,7 @@
 Gõ tiếng Việt thông minh trên Sublime Text. Nhấn phím `esc` để bật tắt chế độ gõ tiếng Việt.
 
+
+
 Cài đặt locally:
 ```
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
