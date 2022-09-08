@@ -1,0 +1,5 @@
+Bộ gõ tiếng Việt thông minh cho Sublime Texteditor
+
+thoải mái gõ cả từ tiếng anh như console, however và tiếng việt, mặc định chọn tiếng việt nếu là từ có nghĩa.
+
+trường hợp nhập nhằng như á toon thì ấn tab để chọn tiếng Anh
