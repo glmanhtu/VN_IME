@@ -9,7 +9,8 @@ class State:
     REGION = False
     FINAL = ""
     EV_DICT = {}
-
+    def reset():
+        State.REGION = False
 
 def first_cursor(view):
     return view.sel()[0]
@@ -25,10 +26,11 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
         if State.TELEXIFY and State.REGION:
             self.view.insert(edit, first_cursor_pos(self.view), " ")
-            State.REGION = False
+            State.reset()
             self.view.hide_popup()
         else:
             self.view.insert(edit, first_cursor_pos(self.view), "\t")
+
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
@@ -36,7 +38,7 @@ class FinishWordCommand(sublime_plugin.TextCommand):
             if first_cursor_pos(self.view) == State.REGION.end(): 
                 # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
                 self.view.replace(edit, State.REGION, State.FINAL)
-            State.REGION = False
+            State.reset()
             self.view.hide_popup()
         self.view.insert(edit, first_cursor_pos(self.view), key)
 
@@ -67,7 +69,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
         final = process_sequence(origin); #print(final)
 
         if final == origin:
-            State.REGION = False
+            State.reset()
             self.view.hide_popup()
         else:
             State.REGION = curr_region
@@ -76,7 +78,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
             self.view.show_popup(
                 final,
                 location=loc,
-                # on_hide=lambda x: State.
+                on_hide=State.reset
             )
 
 
