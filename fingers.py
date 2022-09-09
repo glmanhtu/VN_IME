@@ -47,7 +47,9 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
 
 class EventListener(sublime_plugin.EventListener):
     def on_modified(self, view):
-        if not State.SKIP_RESET: State.reset()
+        if not State.SKIP_RESET: 
+            State.reset()
+            view.hide_popup()
         State.SKIP_RESET = False
 
 class AzPressCommand(sublime_plugin.TextCommand):
