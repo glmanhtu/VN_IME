@@ -8,9 +8,11 @@ class State:
     TELEXIFY = True
     REGION = False
     FINAL = False
+    AZ_PRESSED = False
     EV_DICT = False
     def reset():
         State.REGION = False
+        State.AZ_PRESSED = False
 
 def first_cursor(view):
     return view.sel()[0]
@@ -34,7 +36,9 @@ def mimic_original_key_press(view, edit, key):
 
 # class SaveOnModifiedListener(sublime_plugin.EventListener):
 #     def on_modified(self, view):
-#         view.run_command('finish_word')
+#         if not State.AZ_PRESSED: view.run_command("transform_word")
+#         State.AZ_PRESSED = False
+
 
 class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
@@ -46,19 +50,27 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
             mimic_original_key_press(self.view, edit, key)
 
 
-class FinishWordCommand(sublime_plugin.TextCommand):
-    def run(self, edit, key):
+class TransformWord(sublime_plugin.TextCommand):
+    def run(self, edit):
         if State.TELEXIFY and State.REGION:
-            if first_cursor_pos(self.view) == State.REGION.end(): 
-                # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
+            # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
+            if first_cursor_pos(self.view) == State.REGION.end():
                 self.view.replace(edit, State.REGION, State.FINAL)
             State.reset()
             self.view.hide_popup()
+
+
+class FinishWordCommand(sublime_plugin.TextCommand):
+    def run(self, edit, key=""):
+        # print(">>> FinishWordCommand" + " : " + key)
+        self.view.run_command("transform_word")
         mimic_original_key_press(self.view, edit, key)
 
 
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
+        State.AZ_PRESSED = True
+
         region = first_cursor(self.view)
         if region.empty():
             if key == "backspace":
@@ -146,12 +158,13 @@ class DictionaryEventListener(sublime_plugin.EventListener):
 
         try: word = re.compile(r"[a-zA-Z]+").search(word.lower()).group()
         except AttributeError: return # No match in text
-
-        content = State.EV_DICT[word]
-        if not content: return
-        view.show_popup(
-            "<b>" + word + "</b><br> " + content,
-            location=point,
-            max_width=800,
-            max_height=400,
-        )
+    
+        try:
+            content = State.EV_DICT[word]
+            view.show_popup(
+                "<b>" + word + "</b><br> " + content,
+                location=point,
+                max_width=800,
+                max_height=400,
+            )
+        except KeyError: return
