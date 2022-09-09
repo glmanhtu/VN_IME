@@ -8,9 +8,9 @@ Cài đặt thông thường:
 
 Add `https://github.com/telexyz/fingers-sublime.git`
 
-Sau đó vào `Package Control: Install Package` và tìm `fingers-sublime` và cài đặt.
+Sau đó vào `Package Control: Install Package` và tìm `fingers-sublime` để cài đặt.
 
-### Một số phím tắt cài sẵn: 
+### Một số phím tắt cài sẵn:
 
 - `command+shift` hoặc `windows+shift` để tắt / bật chế độ gõ.
 
@@ -23,9 +23,16 @@ Cài đặt locally để phát triển:
 git clone https://github.com/telexyz/fingers-sublime.git
 ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packages/fingers-sublime
 ```
+
 ## DOING
 
 - Khi viết code chỉ gõ dc TV trong comment và string.
+
+- Lưu lại ORIGIN keys của các từ TV đã được chuyển hóa gần đây dưới dạng queue để tiện cho việc undo ...
+
+- Làm tính năng gợi ý từ đang gõ sử dụng bằng cách thống kê n-gram các văn bản có trong current folder
+
+- Tương tự làm tính năng phát hiện lỗi chính tả sử dụng n-gram built được ở trên. Cần bộ từ tiếng Anh, phân tích ngữ âm tiếng Việt và các từ ngoài từ điển được chấp nhận trong các văn bản đã gõ (xuất hiện nhiều hơn `n` lần để đảm bảo đó là 1 từ được sử dụng lặp đi lặp lại)
 
 ## DONE
 
