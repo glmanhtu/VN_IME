@@ -7,12 +7,14 @@ import os, webbrowser, urllib.parse
 class State:
     TELEXIFY = True
     REGION = False
+    ORIGIN = False
     FINAL = False
-    AZ_PRESSED = False
+    SKIP_TRANSFORM = True
     EV_DICT = False
     def reset():
         State.REGION = False
-        State.AZ_PRESSED = False
+        State.ORIGIN = False
+        State.SKIP_TRANSFORM = True
 
 def first_cursor(view):
     return view.sel()[0]
@@ -33,11 +35,11 @@ def mimic_original_key_press(view, edit, key):
     else:
         replace_selected_region(view, edit, region, key)
 
-
-# class SaveOnModifiedListener(sublime_plugin.EventListener):
-#     def on_modified(self, view):
-#         if not State.AZ_PRESSED: view.run_command("transform_word")
-#         State.AZ_PRESSED = False
+class EventListener(sublime_plugin.EventListener):
+    def on_modified(self, view):
+        if State.SKIP_TRANSFORM is False:
+            State.reset()
+        State.SKIP_TRANSFORM = False
 
 
 class KeepOriginCommand(sublime_plugin.TextCommand):
@@ -50,11 +52,11 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
             mimic_original_key_press(self.view, edit, key)
 
 
-class TransformWord(sublime_plugin.TextCommand):
+class TransformWordCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         if State.TELEXIFY and State.REGION:
             # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
-            if first_cursor_pos(self.view) == State.REGION.end():
+            if first_cursor_pos(self.view) <= State.REGION.end() + 1:
                 self.view.replace(edit, State.REGION, State.FINAL)
             State.reset()
             self.view.hide_popup()
@@ -69,8 +71,7 @@ class FinishWordCommand(sublime_plugin.TextCommand):
 
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        State.AZ_PRESSED = True
-
+        State.SKIP_TRANSFORM = True
         region = first_cursor(self.view)
         if region.empty():
             if key == "backspace":
