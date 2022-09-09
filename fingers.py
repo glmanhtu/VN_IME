@@ -56,10 +56,11 @@ class AzPressCommand(sublime_plugin.TextCommand):
         region = first_cursor(self.view)
         if region.empty():
             if key == "backspace":
-                region = sublime.Region(region.end() - 1, region.end())
-                deleted = self.view.substr(region)
-                self.view.replace(edit, region, "")
-                if not deleted.isalpha(): return
+                 if not State.ORIGIN or len(State.ORIGIN) == 1:
+                    region = sublime.Region(region.end() - 1, region.end())
+                    deleted = self.view.substr(region)
+                    self.view.replace(edit, region, "")
+                    if not deleted.isalpha(): return
             else:
                 self.view.insert(edit, region.begin(), key)
         else: # đoạn text dc bôi đen
@@ -80,13 +81,12 @@ class AzPressCommand(sublime_plugin.TextCommand):
         origin = self.view.substr(curr_region)
 
         if State.ORIGIN:
-            if key != "backspace":
+            if key == "backspace": State.ORIGIN = State.ORIGIN[:-1]
+            else:
                 if (State.ORIGIN == origin[:-1] or State.FINAL == origin[:-1]):
                     State.ORIGIN += origin[-1]
                 else:
-                    State.ORIGIN = origin
-            else:
-                State.ORIGIN = State.ORIGIN[:-1]
+                    State.ORIGIN = origin                
         else:
             State.ORIGIN = origin
 
