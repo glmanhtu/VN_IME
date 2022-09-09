@@ -7,8 +7,8 @@ import os, webbrowser, urllib.parse
 class State:
     TELEXIFY = True
     REGION = False
-    FINAL = ""
-    EV_DICT = {}
+    FINAL = False
+    EV_DICT = False
     def reset():
         State.REGION = False
 
@@ -120,14 +120,17 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
             urllib.parse.quote(selection))
 
 import os, re
+import os.path
+from os import path
 def plugin_loaded():
     # Nạp từ điển Anh Việt
-    # Dict data https://github.com/catusf/tudien/blob/master/dict
     # cd /Applications/Sublime\ Text.app/Contents/MacOS
     # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
-    # cd ~/Library/Application\ Support/Sublime\ Text/Packages
-    # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
-    t = open(os.getcwd() + "/TudienAnhVietBeta.tab", mode="r", encoding="utf-8").read()
+    f = os.getcwd() + "/TudienAnhVietBeta.tab"; print(f)
+    if not path.exists(f): return
+
+    State.EV_DICT = {}
+    t = open(f, mode="r", encoding="utf-8").read()
     for w in t.split("\n"):
         ev = w.split("\t")
         if len(ev) >= 2: State.EV_DICT[ev[0]] = ev[1]
@@ -136,6 +139,8 @@ def plugin_loaded():
 
 class DictionaryEventListener(sublime_plugin.EventListener):
     def on_hover(self, view, point, hover_zone):
+        if not State.EV_DICT: return
+
         word = view.substr(view.word(point))
         if not word: return
 
