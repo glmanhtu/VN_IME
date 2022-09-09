@@ -5,8 +5,8 @@
     { "keys": ["shift+super"], "command": "toggle_telex_mode" },
     
     { "keys": ["tab"], "command": "keep_origin", "args": {"key": "\t" } }, // ko chuyển hóa
-
     { "keys": ["backspace"], "command": "az_press", "args": {"key": "backspace" }},
+    
     { "keys": ["a"], "command": "az_press", "args": {"key": "a" } },
     { "keys": ["b"], "command": "az_press", "args": {"key": "b" } },
     { "keys": ["c"], "command": "az_press", "args": {"key": "c" } },
@@ -60,5 +60,4 @@
     { "keys": ["X"], "command": "az_press", "args": {"key": "X" } },
     { "keys": ["Y"], "command": "az_press", "args": {"key": "Y" } },
     { "keys": ["Z"], "command": "az_press", "args": {"key": "Z" } },
-
 ]
