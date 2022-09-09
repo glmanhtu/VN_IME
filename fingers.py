@@ -8,11 +8,11 @@ class State:
     TELEXIFY = True
     ORIGIN = False
     FINAL = False
-    SKIP_TRANSFORM = True
+    SKIP_RESET = True
     EV_DICT = False
     def reset():
         State.ORIGIN = False
-        State.SKIP_TRANSFORM = True
+        State.SKIP_RESET = True
 
 def first_cursor(view):
     return view.sel()[0]
@@ -47,23 +47,25 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
 
 class EventListener(sublime_plugin.EventListener):
     def on_modified(self, view):
-        if State.SKIP_TRANSFORM is False:
-            State.reset()
-        State.SKIP_TRANSFORM = False
+        if not State.SKIP_RESET: State.reset()
+        State.SKIP_RESET = False
 
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        State.SKIP_TRANSFORM = True
+        State.SKIP_RESET = True
         region = first_cursor(self.view)
         if region.empty():
             if key == "backspace":
-                region=sublime.Region(region.end()-1, region.end())
+                region = sublime.Region(region.end() - 1, region.end())
+                deleted = self.view.substr(region)
                 self.view.replace(edit, region, "")
+                if not deleted.isalpha(): return
             else:
                 self.view.insert(edit, region.begin(), key)
         else: # đoạn text dc bôi đen
             if key == "backspace": key = ""
             replace_selected_region(self.view, edit, region, key)
+            return
 
         # Bỏ qua nếu chế độ gõ Telex đang tắt
         if not State.TELEXIFY: return False
@@ -102,7 +104,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
 
 class ReplaceCurrentCommand(sublime_plugin.TextCommand):
     def run(self, edit, string):
-        State.SKIP_TRANSFORM = True
+        State.SKIP_RESET = True
         curr_cursor = first_cursor(self.view)
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
