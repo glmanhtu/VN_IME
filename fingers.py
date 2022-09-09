@@ -197,13 +197,15 @@ class DictionaryEventListener(sublime_plugin.EventListener):
 
         try: word = re.compile(r"[a-zA-Z]+").search(word.lower()).group()
         except AttributeError: return # No match in text
-    
-        try:
-            content = State.EV_DICT[word]
-            view.show_popup(
-                "<b>" + word + "</b><br> " + content,
-                location=point,
-                max_width=800,
-                max_height=400,
-            )
-        except KeyError: return
+
+        while (len(word) > 0):
+            try:
+                content = State.EV_DICT[word]
+                view.show_popup(
+                    "<b>" + word + "</b><br> " + content,
+                    location=point,
+                    max_width=800,
+                    max_height=400,
+                )
+                return
+            except KeyError: word = word[:-1]
