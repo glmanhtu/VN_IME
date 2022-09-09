@@ -36,7 +36,7 @@ def mimic_original_key_press(view, edit, key):
 
 class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        if State.TELEXIFY:
+        if State.TELEXIFY and State.ORIGIN:
             self.view.end_edit(edit)
             self.view.run_command("replace_current", { "string" : State.ORIGIN + " " })
             State.reset()
@@ -81,12 +81,16 @@ class AzPressCommand(sublime_plugin.TextCommand):
         origin = self.view.substr(curr_region)
 
         if State.ORIGIN:
-            if key == "backspace": State.ORIGIN = State.ORIGIN[:-1]
+            if key == "backspace":
+                if (State.ORIGIN == origin or State.FINAL == origin):
+                    State.ORIGIN = State.ORIGIN[:-1]
+                else:
+                    State.ORIGIN = origin
             else:
                 if (State.ORIGIN == origin[:-1] or State.FINAL == origin[:-1]):
                     State.ORIGIN += origin[-1]
                 else:
-                    State.ORIGIN = origin                
+                    State.ORIGIN = origin
         else:
             State.ORIGIN = origin
 
