@@ -18,6 +18,12 @@ def first_cursor(view):
 def first_cursor_pos(view):
     return view.sel()[0].begin()
 
+def replace_selected_region(view, edit, region, key):
+    view.replace(edit, region, key)
+    sel = view.sel()
+    sel.clear()
+    sel.add(region.begin() + len(key))
+
 # class SaveOnModifiedListener(sublime_plugin.EventListener):
 #     def on_modified(self, view):
 #         view.run_command('finish_word')
@@ -29,7 +35,11 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
             State.reset()
             self.view.hide_popup()
         else:
-            self.view.insert(edit, first_cursor_pos(self.view), "\t")
+            region = first_cursor(self.view)
+            if region.empty():
+                self.view.insert(edit, region.begin(), key)
+            else:
+                replace_selected_region(self.view, edit, region, key)
 
 
 class FinishWordCommand(sublime_plugin.TextCommand):
@@ -40,19 +50,26 @@ class FinishWordCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, State.REGION, State.FINAL)
             State.reset()
             self.view.hide_popup()
-        self.view.insert(edit, first_cursor_pos(self.view), key)
+
+        region = first_cursor(self.view)
+        if region.empty():
+            self.view.insert(edit, region.begin(), key)
+        else:
+            replace_selected_region(self.view, edit, region, key)
 
 
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
         region = first_cursor(self.view)
         if region.empty():
-            self.view.insert(edit, region.begin(), key)
+            if key == "backspace":
+                region=sublime.Region(region.end()-1, region.end())
+                self.view.replace(edit, region, "")
+            else:
+                self.view.insert(edit, region.begin(), key)
         else: # đoạn text dc bôi đen
-            self.view.replace(edit, region, key)
-            selection = self.view.sel()
-            selection.clear()
-            selection.add(region.begin() + 1)
+            if key == "backspace": key = ""
+            replace_selected_region(self.view, edit, region, key)
 
         # Bỏ qua nếu chế độ gõ Telex đang tắt
         if not State.TELEXIFY: return False
