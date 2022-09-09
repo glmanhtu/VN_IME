@@ -131,7 +131,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
                 self.view.show_popup(State.ORIGIN, location=curr_region.begin())
         else: # Nếu ko thì hiển thị ORIGIN
             self.view.end_edit(edit)
-            self.view.run_command("replace_current", { "string" : State.State.ORIGIN })
+            self.view.run_command("replace_current", { "string" : State.ORIGIN })
 
 
 ''' TextCommand để thay chuỗi ký tự đang gõ bằng 1 đoạn text được chỉ định '''
