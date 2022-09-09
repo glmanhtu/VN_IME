@@ -6,40 +6,51 @@ import os, webbrowser, urllib.parse
 
 class State:
     TELEXIFY = True
-    CURR_REGION = False
+    REGION = False
     FINAL = ""
     EV_DICT = {}
 
 def first_cursor(view):
     return view.sel()[0]
 
-class SaveOnModifiedListener(sublime_plugin.EventListener):
-    def on_modified(self, view):
-        view.run_command('key_pressed')
+def first_cursor_pos(view):
+    return view.sel()[0].begin()
+
+# class SaveOnModifiedListener(sublime_plugin.EventListener):
+#     def on_modified(self, view):
+#         view.run_command('finish_word')
 
 class TabPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         region = first_cursor(self.view)
-        if State.TELEXIFY and State.CURR_REGION:
+        if State.TELEXIFY and State.REGION:
             self.view.insert(edit, region.begin(), " ")
-            State.CURR_REGION = False
+            State.REGION = False
+            self.view.hide_popup()
         else:
             self.view.insert(edit, region.begin(), "\t")
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        if State.TELEXIFY and State.CURR_REGION:
-            region = first_cursor(self.view)
-            region = sublime.Region(State.CURR_REGION.begin(), region.end())
-            self.view.replace(edit, region, State.FINAL + key)
-            State.CURR_REGION = False
-        else:
-            region = first_cursor(self.view)
-            self.view.insert(edit, region.begin(), key)
+        if State.TELEXIFY and State.REGION:
+            if first_cursor_pos(self.view) == State.REGION.end(): 
+                self.view.replace(edit, State.REGION, State.FINAL)
+            State.REGION = False
+            self.view.hide_popup()
+        self.view.insert(edit, first_cursor_pos(self.view), key)
 
 
 class KeyPressedCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
+    def run(self, edit, key):
+        region = first_cursor(self.view)
+        if region.begin() == region.end():
+            self.view.insert(edit, region.begin(), key)
+        else:
+            self.view.replace(edit, region, key)
+            selection = self.view.sel()
+            selection.clear()
+            selection.add(region.begin() + 1)
+
         # Bỏ qua nếu chế độ gõ Telex đang tắt
         if not State.TELEXIFY: return False
         self.view.hide_popup()
@@ -55,10 +66,10 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
         final = process_sequence(origin); #print(final)
 
         if final == origin:
-            State.CURR_REGION = False
+            State.REGION = False
             self.view.hide_popup()
         else:
-            State.CURR_REGION = curr_region
+            State.REGION = curr_region
             State.FINAL = final
             loc = curr_region.end() - len(final)
             self.view.show_popup(final, location=loc)
