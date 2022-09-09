@@ -24,6 +24,14 @@ def replace_selected_region(view, edit, region, key):
     sel.clear()
     sel.add(region.begin() + len(key))
 
+def mimic_original_key_press(view, edit, key):
+    region = first_cursor(view)
+    if region.empty():
+        view.insert(edit, region.begin(), key)
+    else:
+        replace_selected_region(view, edit, region, key)
+
+
 # class SaveOnModifiedListener(sublime_plugin.EventListener):
 #     def on_modified(self, view):
 #         view.run_command('finish_word')
@@ -35,11 +43,7 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
             State.reset()
             self.view.hide_popup()
         else:
-            region = first_cursor(self.view)
-            if region.empty():
-                self.view.insert(edit, region.begin(), key)
-            else:
-                replace_selected_region(self.view, edit, region, key)
+            mimic_original_key_press(self.view, edit, key)
 
 
 class FinishWordCommand(sublime_plugin.TextCommand):
@@ -50,12 +54,7 @@ class FinishWordCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, State.REGION, State.FINAL)
             State.reset()
             self.view.hide_popup()
-
-        region = first_cursor(self.view)
-        if region.empty():
-            self.view.insert(edit, region.begin(), key)
-        else:
-            replace_selected_region(self.view, edit, region, key)
+        mimic_original_key_press(self.view, edit, key)
 
 
 class AzPressCommand(sublime_plugin.TextCommand):
