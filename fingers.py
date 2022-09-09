@@ -10,6 +10,7 @@ class State:
     FINAL = ""
     EV_DICT = {}
 
+
 def first_cursor(view):
     return view.sel()[0]
 
@@ -20,32 +21,32 @@ def first_cursor_pos(view):
 #     def on_modified(self, view):
 #         view.run_command('finish_word')
 
-class TabPressedCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        region = first_cursor(self.view)
+class KeepOriginCommand(sublime_plugin.TextCommand):
+    def run(self, edit, key):
         if State.TELEXIFY and State.REGION:
-            self.view.insert(edit, region.begin(), " ")
+            self.view.insert(edit, first_cursor_pos(self.view), " ")
             State.REGION = False
             self.view.hide_popup()
         else:
-            self.view.insert(edit, region.begin(), "\t")
+            self.view.insert(edit, first_cursor_pos(self.view), "\t")
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
         if State.TELEXIFY and State.REGION:
             if first_cursor_pos(self.view) == State.REGION.end(): 
+                # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
                 self.view.replace(edit, State.REGION, State.FINAL)
             State.REGION = False
             self.view.hide_popup()
         self.view.insert(edit, first_cursor_pos(self.view), key)
 
 
-class KeyPressedCommand(sublime_plugin.TextCommand):
+class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
         region = first_cursor(self.view)
-        if region.begin() == region.end():
+        if region.empty():
             self.view.insert(edit, region.begin(), key)
-        else:
+        else: # đoạn text dc bôi đen
             self.view.replace(edit, region, key)
             selection = self.view.sel()
             selection.clear()
@@ -72,7 +73,11 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
             State.REGION = curr_region
             State.FINAL = final
             loc = curr_region.end() - len(final)
-            self.view.show_popup(final, location=loc)
+            self.view.show_popup(
+                final,
+                location=loc,
+                # on_hide=lambda x: State.
+            )
 
 
 class ToggleTelexModeCommand(sublime_plugin.TextCommand):
