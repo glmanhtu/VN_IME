@@ -2,7 +2,6 @@
 
 from .telexify.core import process_sequence
 import sublime, sublime_plugin
-import os, webbrowser, urllib.parse
 
 class State:
     TELEXIFY = True
@@ -14,18 +13,22 @@ class State:
         State.ORIGIN = False
         State.SKIP_RESET = True
 
+''' Trả lại con trỏ đầu tiên trong multi-currsors '''
 def first_cursor(view):
     return view.sel()[0]
 
+''' Trả lại vị trí của con trỏ đầu tiên '''
 def first_cursor_pos(view):
     return view.sel()[0].begin()
 
+''' Mô phỏng lại động tác vùng text bôi đen bị xóa khi ấn 1 phím key bất kỳ '''
 def replace_selected_region(view, edit, region, key):
     view.replace(edit, region, key)
     sel = view.sel()
     sel.clear()
     sel.add(region.begin() + len(key))
 
+''' Mô phỏng việc bấm 1 phím key bất kỳ '''
 def mimic_original_key_press(view, edit, key):
     region = first_cursor(view)
     if region.empty():
@@ -34,6 +37,7 @@ def mimic_original_key_press(view, edit, key):
         replace_selected_region(view, edit, region, key)
 
 
+''' TextCommand để hiện chuỗi ký tự gốc được gõ chứ ko chuyển hóa thành TV '''
 class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
         if State.TELEXIFY and State.ORIGIN:
@@ -45,27 +49,39 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
             mimic_original_key_press(self.view, edit, key)
 
 
+''' Nghe sự kiện on_modified để xóa kịp thời ORIGIN khi người dùng chuyển
+từ việc gõ phím alphabet liên tục sang một theo tác khác => kết thúc chuỗi ký tự '''
 class EventListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         if not State.SKIP_RESET: 
             State.reset()
             view.hide_popup()
+        # Đảm bảo gọi State.reset() cho lần thứ 2 liên tiếp on_modified được gọi
         State.SKIP_RESET = False
 
+
+''' TextCommand sẽ chạy khi phím a-zA-Z hoặc backspace được bấm.
+Các từ được cấu thành bởi alphabet key và backspace cho trường hợp viết sai xóa đi
+viết lại. Đây là hàm quan trọng nhất của bộ gõ. '''
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
+        # Bỏ qua State.reset() cho lần đầu on_modified được gọi
         State.SKIP_RESET = True
+
         region = first_cursor(self.view)
-        if region.empty():
+        if region.empty(): # ko có selected text
             if key == "backspace":
                  if not State.ORIGIN or len(State.ORIGIN) == 1:
+                    # nếu là phím backspace hoặc ORIGIN chỉ còn 1 ký tự
+                    # thì xóa ký tự thật tại vị trí con trỏ
                     region = sublime.Region(region.end() - 1, region.end())
                     deleted = self.view.substr(region)
                     self.view.replace(edit, region, "")
+                    # Chỉ thực hiện tiếp nnếu ký tự vừa xóa là a-zA-Z
                     if not deleted.isalpha(): return
             else:
                 self.view.insert(edit, region.begin(), key)
-        else: # đoạn text dc bôi đen
+        else: # xử lý selected text (đoạn text dc bôi đen)
             if key == "backspace": key = ""
             replace_selected_region(self.view, edit, region, key)
             return
@@ -80,34 +96,45 @@ class AzPressCommand(sublime_plugin.TextCommand):
             
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
-        origin = self.view.substr(curr_region)
+        current = self.view.substr(curr_region)
 
+        # `current` là đoạn ký tự đang hiển thị trên màn hình từ phần đầu của
+        # từ cho tới vị trí con trỏ
+        # `ORIGIN` là chuỗi ký tự gốc được gõ (chưa chuyển hóa)
+        # `FINAL` là chuỗi ký tự đã được telexify sang tiếng Việt (đã chuyển hóa)
         if State.ORIGIN:
             if key == "backspace":
-                if (State.ORIGIN == origin or State.FINAL == origin):
-                    State.ORIGIN = State.ORIGIN[:-1]
-                else:
-                    State.ORIGIN = origin
+                # Kiểm tra sự liền mạch của thao tác gõ telex
+                if (State.ORIGIN == current or State.FINAL == current):
+                    State.ORIGIN = State.ORIGIN[:-1] # xóa ký tự cuối của ORIGIN
+                else: # thao tác gõ ko còn liền mạch nữa
+                    State.ORIGIN = current
             else:
-                if (State.ORIGIN == origin[:-1] or State.FINAL == origin[:-1]):
-                    State.ORIGIN += origin[-1]
-                else:
-                    State.ORIGIN = origin
-        else:
-            State.ORIGIN = origin
+                # Kiểm tra sự liền mạch của thao tác gõ telex
+                if (State.ORIGIN == current[:-1] or State.FINAL == current[:-1]):
+                    State.ORIGIN += current[-1] # thêm key vừa gõ vào ORIGIN
+                else: # thao tác gõ ko còn liền mạch nữa
+                    State.ORIGIN = current
+        else: # ORIGIN chưa được khởi tạo
+            State.ORIGIN = current
 
+        # Chuyển hóa ORIGIN (chuỗi ký tự được gõ) thành FINAL (tiếng Việt)
         State.FINAL = process_sequence(State.ORIGIN); #print(final)
 
+        # Nếu chuyển hóa thành công, FINAL có thể là 1 từ tiếng Việt có nghĩa
         if State.FINAL:
-            self.view.end_edit(edit)
+            self.view.end_edit(edit) # thì hiển thị FINAL
             self.view.run_command("replace_current", { "string" : State.FINAL })
             if State.FINAL != State.ORIGIN:
+                # đồng thời show ORIGIN trong popup để người gõ xem đó có phải
+                # từ tiếng Anh mình muốn gõ hay không
                 self.view.show_popup(State.ORIGIN, location=curr_region.begin())
-        else:
+        else: # Nếu ko thì hiển thị ORIGIN
             self.view.end_edit(edit)
             self.view.run_command("replace_current", { "string" : State.State.ORIGIN })
 
 
+''' TextCommand để thay chuỗi ký tự đang gõ bằng 1 đoạn text được chỉ định '''
 class ReplaceCurrentCommand(sublime_plugin.TextCommand):
     def run(self, edit, string):
         State.SKIP_RESET = True
@@ -116,6 +143,8 @@ class ReplaceCurrentCommand(sublime_plugin.TextCommand):
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
         self.view.replace(edit, curr_region, string)
 
+
+''' Bật tắt chế độ gõ Telex '''
 class ToggleTelexModeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         if State.TELEXIFY is True:
@@ -126,6 +155,8 @@ class ToggleTelexModeCommand(sublime_plugin.TextCommand):
             self.view.set_status('Fingers'," Gõ tiếng Việt: Bật")
 
 
+''' Tiện ích gửi đoạn text được chọn lên Google dịch '''
+import os, webbrowser, urllib.parse
 class GoogleTranslateCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         region = first_cursor(self.view)
@@ -137,6 +168,8 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
         webbrowser.open("https://translate.google.com/?hl=vi&sl=auto&tl=vi&text=" + \
             urllib.parse.quote(selection))
 
+
+''' Tiện ích tra từ điển Anh - Việt khi di chuột lên 1 từ '''
 import os, re
 import os.path
 from os import path
