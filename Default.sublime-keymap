@@ -6,17 +6,6 @@
     
     { "keys": ["tab"], "command": "keep_origin", "args": {"key": "\t" } }, // ko chuyển hóa
 
-    { "keys": [" "], "command": "finish_word", "args": {"key": " " }},
-    // { "keys": [","], "command": "finish_word", "args": {"key": "," }},
-    // { "keys": ["."], "command": "finish_word", "args": {"key": "." }},
-    // { "keys": [";"], "command": "finish_word", "args": {"key": ";" }},
-    // { "keys": [":"], "command": "finish_word", "args": {"key": ":" }},
-    // { "keys": ["?"], "command": "finish_word", "args": {"key": "?" }},
-    // { "keys": [")"], "command": "finish_word", "args": {"key": ")" }},
-    // { "keys": ["]"], "command": "finish_word", "args": {"key": "]" }},
-    // { "keys": ["}"], "command": "finish_word", "args": {"key": "}" }},
-    // { "keys": ["enter"], "command": "finish_word", "args": {"key": "\n" }},
-
     { "keys": ["backspace"], "command": "az_press", "args": {"key": "backspace" }},
     { "keys": ["a"], "command": "az_press", "args": {"key": "a" } },
     { "keys": ["b"], "command": "az_press", "args": {"key": "b" } },

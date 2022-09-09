@@ -6,13 +6,11 @@ import os, webbrowser, urllib.parse
 
 class State:
     TELEXIFY = True
-    REGION = False
     ORIGIN = False
     FINAL = False
     SKIP_TRANSFORM = True
     EV_DICT = False
     def reset():
-        State.REGION = False
         State.ORIGIN = False
         State.SKIP_TRANSFORM = True
 
@@ -35,39 +33,23 @@ def mimic_original_key_press(view, edit, key):
     else:
         replace_selected_region(view, edit, region, key)
 
-class EventListener(sublime_plugin.EventListener):
-    def on_modified(self, view):
-        if State.SKIP_TRANSFORM is False:
-            State.reset()
-        State.SKIP_TRANSFORM = False
-
 
 class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        if State.TELEXIFY and State.REGION:
-            self.view.insert(edit, first_cursor_pos(self.view), " ")
+        if State.TELEXIFY:
+            self.view.end_edit(edit)
+            self.view.run_command("replace_current", { "string" : State.ORIGIN + " " })
             State.reset()
             self.view.hide_popup()
         else:
             mimic_original_key_press(self.view, edit, key)
 
 
-class TransformWordCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        if State.TELEXIFY and State.REGION:
-            # quan trọng: ký tự dứt điểm phải dc gõ ở cuối từ đang chuyển hóa
-            if first_cursor_pos(self.view) <= State.REGION.end() + 1:
-                self.view.replace(edit, State.REGION, State.FINAL)
+class EventListener(sublime_plugin.EventListener):
+    def on_modified(self, view):
+        if State.SKIP_TRANSFORM is False:
             State.reset()
-            self.view.hide_popup()
-
-
-class FinishWordCommand(sublime_plugin.TextCommand):
-    def run(self, edit, key=""):
-        # print(">>> FinishWordCommand" + " : " + key)
-        self.view.run_command("transform_word")
-        mimic_original_key_press(self.view, edit, key)
-
+        State.SKIP_TRANSFORM = False
 
 class AzPressCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
@@ -93,23 +75,38 @@ class AzPressCommand(sublime_plugin.TextCommand):
             
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
-
         origin = self.view.substr(curr_region)
-        final = process_sequence(origin); #print(final)
 
-        if final == origin:
-            State.reset()
-            self.view.hide_popup()
+        if State.ORIGIN:
+            if key != "backspace":
+                if (State.ORIGIN == origin[:-1] or State.FINAL == origin[:-1]):
+                    State.ORIGIN += origin[-1]
+                else:
+                    State.ORIGIN = origin
+            else:
+                State.ORIGIN = State.ORIGIN[:-1]
         else:
-            State.REGION = curr_region
-            State.FINAL = final
-            loc = curr_region.end() - len(final)
-            self.view.show_popup(
-                final,
-                location=loc,
-                on_hide=State.reset
-            )
+            State.ORIGIN = origin
 
+        State.FINAL = process_sequence(State.ORIGIN); #print(final)
+
+        if State.FINAL:
+            self.view.end_edit(edit)
+            self.view.run_command("replace_current", { "string" : State.FINAL })
+            if State.FINAL != State.ORIGIN:
+                self.view.show_popup(State.ORIGIN, location=curr_region.begin())
+        else:
+            self.view.end_edit(edit)
+            self.view.run_command("replace_current", { "string" : State.State.ORIGIN })
+
+
+class ReplaceCurrentCommand(sublime_plugin.TextCommand):
+    def run(self, edit, string):
+        State.SKIP_TRANSFORM = True
+        curr_cursor = first_cursor(self.view)
+        word_region = self.view.word(curr_cursor)
+        curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
+        self.view.replace(edit, curr_region, string)
 
 class ToggleTelexModeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
