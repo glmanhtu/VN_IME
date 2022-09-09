@@ -3,7 +3,6 @@
     { "keys": ["super+escape"], "command": "google_translate" },
     { "keys": ["super+shift"], "command": "toggle_telex_mode" },
     { "keys": ["shift+super"], "command": "toggle_telex_mode" },
-    { "keys": ["primary+z"], "command": "undo_function" },
     
     { "keys": ["tab"], "command": "keep_origin", "args": {"key": "\t" } }, // ko chuyển hóa
 

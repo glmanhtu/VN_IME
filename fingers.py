@@ -119,13 +119,6 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
         webbrowser.open("https://translate.google.com/?hl=vi&sl=auto&tl=vi&text=" + \
             urllib.parse.quote(selection))
 
-
-class UndoFunctionCommand(sublime_plugin.WindowCommand):
-    def run(self):
-        State.TELEXIFY = False
-        self.window.run_command("undo")
-        State.TELEXIFY = True
-
 import os, re
 def plugin_loaded():
     # Nạp từ điển Anh Việt
