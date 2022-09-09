@@ -4,10 +4,11 @@ from .telexify.core import process_sequence
 import sublime, sublime_plugin
 import os, webbrowser, urllib.parse
 
-TELEXIFY = True
-CURR_REGION = False
-FINAL = ""
-EV_DICT = {}
+class State:
+    TELEXIFY = True
+    CURR_REGION = False
+    FINAL = ""
+    EV_DICT = {}
 
 def first_cursor(view):
     return view.sel()[0]
@@ -18,22 +19,20 @@ class SaveOnModifiedListener(sublime_plugin.EventListener):
 
 class TabPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        global CURR_REGION
         region = first_cursor(self.view)
-        if TELEXIFY and CURR_REGION:
+        if State.TELEXIFY and State.CURR_REGION:
             self.view.insert(edit, region.begin(), " ")
-            CURR_REGION = False
+            State.CURR_REGION = False
         else:
             self.view.insert(edit, region.begin(), "\t")
 
 class FinishWordCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        global CURR_REGION
-        if TELEXIFY and CURR_REGION:
+        if State.TELEXIFY and State.CURR_REGION:
             region = first_cursor(self.view)
-            region = sublime.Region(CURR_REGION.begin(), region.end())
-            self.view.replace(edit, region, FINAL + key)
-            CURR_REGION = False
+            region = sublime.Region(State.CURR_REGION.begin(), region.end())
+            self.view.replace(edit, region, State.FINAL + key)
+            State.CURR_REGION = False
         else:
             region = first_cursor(self.view)
             self.view.insert(edit, region.begin(), key)
@@ -42,16 +41,13 @@ class FinishWordCommand(sublime_plugin.TextCommand):
 class KeyPressedCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # Bỏ qua nếu chế độ gõ Telex đang tắt
-        if not TELEXIFY: return False
+        if not State.TELEXIFY: return False
         self.view.hide_popup()
 
         curr_cursor = first_cursor(self.view)
         # Bỏ qua nếu có selected text
         if curr_cursor.begin() != curr_cursor.end(): return False
             
-        global CURR_REGION
-        global FINAL
-
         word_region = self.view.word(curr_cursor)
         curr_region = sublime.Region(word_region.begin(), curr_cursor.begin())
 
@@ -59,23 +55,22 @@ class KeyPressedCommand(sublime_plugin.TextCommand):
         final = process_sequence(origin); #print(final)
 
         if final == origin:
-            CURR_REGION = False
+            State.CURR_REGION = False
             self.view.hide_popup()
         else:
-            CURR_REGION = curr_region
-            FINAL = final
+            State.CURR_REGION = curr_region
+            State.FINAL = final
             loc = curr_region.end() - len(final)
-            self.view.show_popup(FINAL, location=loc)
+            self.view.show_popup(final, location=loc)
 
 
 class ToggleTelexModeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        global TELEXIFY
-        if TELEXIFY is True:
-            TELEXIFY = False
+        if State.TELEXIFY is True:
+            State.TELEXIFY = False
             self.view.set_status('Fingers'," Gõ tiếng Việt: Tắt")
         else:
-            TELEXIFY = True
+            State.TELEXIFY = True
             self.view.set_status('Fingers'," Gõ tiếng Việt: Bật")
 
 
@@ -93,10 +88,9 @@ class GoogleTranslateCommand(sublime_plugin.TextCommand):
 
 class UndoFunctionCommand(sublime_plugin.WindowCommand):
     def run(self):
-        global TELEXIFY
-        TELEXIFY = False
+        State.TELEXIFY = False
         self.window.run_command("undo")
-        TELEXIFY = True
+        State.TELEXIFY = True
 
 import os, re
 def plugin_loaded():
@@ -106,12 +100,11 @@ def plugin_loaded():
     # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
     # cd ~/Library/Application\ Support/Sublime\ Text/Packages
     # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
-    global EV_DICT
     t = open(os.getcwd() + "/TudienAnhVietBeta.tab", mode="r", encoding="utf-8").read()
     for w in t.split("\n"):
         ev = w.split("\t")
-        if len(ev) >= 2: EV_DICT[ev[0]] = ev[1]
-    print("TEST EV_DICT: visually => " + EV_DICT["visually"])
+        if len(ev) >= 2: State.EV_DICT[ev[0]] = ev[1]
+    print("TEST EV_DICT: visually => " + State.EV_DICT["visually"])
 
 
 class DictionaryEventListener(sublime_plugin.EventListener):
@@ -122,7 +115,7 @@ class DictionaryEventListener(sublime_plugin.EventListener):
         try: word = re.compile(r"[a-zA-Z]+").search(word.lower()).group()
         except AttributeError: return # No match in text
 
-        content = EV_DICT[word]
+        content = State.EV_DICT[word]
         if not content: return
         view.show_popup(
             "<b>" + word + "</b><br> " + content,
