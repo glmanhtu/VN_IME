@@ -43,6 +43,7 @@
     { "keys": ["w"], "command": "key_pressed", "args": {"key": "w" } },
     { "keys": ["x"], "command": "key_pressed", "args": {"key": "x" } },
     { "keys": ["y"], "command": "key_pressed", "args": {"key": "y" } },
+    { "keys": ["z"], "command": "key_pressed", "args": {"key": "z" } },
 
     { "keys": ["A"], "command": "key_pressed", "args": {"key": "A" } },
     { "keys": ["B"], "command": "key_pressed", "args": {"key": "B" } },
@@ -69,5 +70,6 @@
     { "keys": ["W"], "command": "key_pressed", "args": {"key": "W" } },
     { "keys": ["X"], "command": "key_pressed", "args": {"key": "X" } },
     { "keys": ["Y"], "command": "key_pressed", "args": {"key": "Y" } },
+    { "keys": ["Z"], "command": "key_pressed", "args": {"key": "Z" } },
 
 ]
