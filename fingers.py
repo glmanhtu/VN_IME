@@ -108,6 +108,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
                     State.ORIGIN = current[:-1]
                     region = sublime.Region(region.end() - 1, region.end())
                     self.view.replace(edit, region, "")
+                    return
             else:
                 # Kiểm tra sự liền mạch của thao tác gõ telex
                 if (State.ORIGIN == current[:-1] or State.FINAL == current[:-1]):
