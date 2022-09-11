@@ -13,6 +13,32 @@ class State:
         State.ORIGIN = False
         State.SKIP_RESET = True
 
+def can_telexify(view: sublime.View):
+    if not State.TELEXIFY: return False
+khoong coss
+    filename = view.window().active_view().file_name()
+    if re.search("\.(md|txt)$", filename): return True
+
+    curr_cursor = first_cursor(view)
+    line_region = view.line(curr_cursor)
+    region = sublime.Region(line_region.begin(), curr_cursor.begin())
+    line = view.substr(region)
+
+    # `Vùng` hiện tại phải là string ["|'] hoặc comment (//|/*|#|''')
+    # Lưu ý comment và string có thể trải trên nhiều dòng!
+
+    line_is_comment = re.search("(//|/\*|#|''')", line)
+    if line_is_comment:
+        # print("line_is_comment", line)
+        return True
+
+    line = line.replace('\\"', "").replace("\\'", "")
+    line_is_string = line.count('"') == 1 or line.count("'") == 1
+    if line_is_string:
+        # print("line_is_string", line)
+        return True
+
+
 ''' Trả lại con trỏ đầu tiên trong multi-currsors '''
 def first_cursor(view):
     return view.sel()[0]
@@ -40,7 +66,7 @@ def mimic_original_key_press(view, edit, key):
 ''' TextCommand để hiện chuỗi ký tự gốc được gõ chứ ko chuyển hóa thành TV '''
 class KeepOriginCommand(sublime_plugin.TextCommand):
     def run(self, edit, key):
-        if State.TELEXIFY and State.ORIGIN:
+        if can_telexify(self.view) and State.ORIGIN:
             self.view.end_edit(edit)
             self.view.run_command("replace_current", { "string" : State.ORIGIN + " " })
             State.reset()
@@ -84,7 +110,7 @@ class AzPressCommand(sublime_plugin.TextCommand):
             return
 
         # Bỏ qua nếu chế độ gõ Telex đang tắt
-        if not State.TELEXIFY: return False
+        if not can_telexify(self.view): return False
         self.view.hide_popup()
 
         curr_cursor = first_cursor(self.view)
