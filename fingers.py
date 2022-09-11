@@ -53,7 +53,7 @@ class KeepOriginCommand(sublime_plugin.TextCommand):
 từ việc gõ phím alphabet liên tục sang một theo tác khác => kết thúc chuỗi ký tự '''
 class EventListener(sublime_plugin.EventListener):
     def on_modified(self, view):
-        if not State.SKIP_RESET: 
+        if not State.SKIP_RESET:
             State.reset()
             view.hide_popup()
         # Đảm bảo gọi State.reset() cho lần thứ 2 liên tiếp on_modified được gọi
@@ -71,13 +71,12 @@ class AzPressCommand(sublime_plugin.TextCommand):
         region = first_cursor(self.view)
         if region.empty(): # ko có selected text
             if key == "backspace":
+                # Nếu ORIGIN chỉ còn 1 ký tự thì xóa ký tự thật tại vị trí con trỏ
                  if not State.ORIGIN or len(State.ORIGIN) == 1:
-                    # nếu là phím backspace hoặc ORIGIN chỉ còn 1 ký tự
-                    # thì xóa ký tự thật tại vị trí con trỏ
                     region = sublime.Region(region.end() - 1, region.end())
                     deleted = self.view.substr(region)
                     self.view.replace(edit, region, "")
-                    # Chỉ thực hiện tiếp nnếu ký tự vừa xóa là a-zA-Z
+                    # Chỉ thực hiện các xử lý tiếp nếu ký tự vừa xóa là a-zA-Z
                     if not deleted.isalpha(): return
             else:
                 self.view.insert(edit, region.begin(), key)
@@ -104,11 +103,14 @@ class AzPressCommand(sublime_plugin.TextCommand):
         # `FINAL` là chuỗi ký tự đã được telexify sang tiếng Việt (đã chuyển hóa)
         if State.ORIGIN:
             if key == "backspace":
-                # Kiểm tra sự liền mạch của thao tác gõ telex
+                # Kiểm tra sự liền mạch của thao tác gõ
                 if (State.ORIGIN == current or State.FINAL == current):
                     State.ORIGIN = State.ORIGIN[:-1] # xóa ký tự cuối của ORIGIN
                 else: # thao tác gõ ko còn liền mạch nữa
-                    State.ORIGIN = current
+                    State.ORIGIN = current[:-1]
+                    region = sublime.Region(region.end() - 1, region.end())
+                    deleted = self.view.substr(region)
+                    self.view.replace(edit, region, "")
             else:
                 # Kiểm tra sự liền mạch của thao tác gõ telex
                 if (State.ORIGIN == current[:-1] or State.FINAL == current[:-1]):
@@ -176,6 +178,8 @@ from os import path
 def plugin_loaded():
     # Nạp từ điển Anh Việt
     # cd /Applications/Sublime\ Text.app/Contents/MacOS
+    # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
+    # cd /Users/t/Library/Application\ Support/Sublime\ Text/Packages/
     # ln -s ~/repos/fingers-sublime/TudienAnhVietBeta.tab
     f = os.getcwd() + "/TudienAnhVietBeta.tab"; print(f)
     if not path.exists(f): return
