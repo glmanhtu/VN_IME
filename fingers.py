@@ -74,10 +74,8 @@ class AzPressCommand(sublime_plugin.TextCommand):
                 # Nếu ORIGIN chỉ còn 1 ký tự thì xóa ký tự thật tại vị trí con trỏ
                  if not State.ORIGIN or len(State.ORIGIN) == 1:
                     region = sublime.Region(region.end() - 1, region.end())
-                    deleted = self.view.substr(region)
                     self.view.replace(edit, region, "")
-                    # Chỉ thực hiện các xử lý tiếp nếu ký tự vừa xóa là a-zA-Z
-                    if not deleted.isalpha(): return
+                    return
             else:
                 self.view.insert(edit, region.begin(), key)
         else: # xử lý selected text (đoạn text dc bôi đen)
