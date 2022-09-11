@@ -15,29 +15,13 @@ class State:
 
 def can_telexify(view: sublime.View):
     if not State.TELEXIFY: return False
-khoong coss
-    filename = view.window().active_view().file_name()
-    if re.search("\.(md|txt)$", filename): return True
-
-    curr_cursor = first_cursor(view)
-    line_region = view.line(curr_cursor)
-    region = sublime.Region(line_region.begin(), curr_cursor.begin())
-    line = view.substr(region)
-
-    # `Vùng` hiện tại phải là string ["|'] hoặc comment (//|/*|#|''')
-    # Lưu ý comment và string có thể trải trên nhiều dòng!
-
-    line_is_comment = re.search("(//|/\*|#|''')", line)
-    if line_is_comment:
-        # print("line_is_comment", line)
-        return True
-
-    line = line.replace('\\"', "").replace("\\'", "")
-    line_is_string = line.count('"') == 1 or line.count("'") == 1
-    if line_is_string:
-        # print("line_is_string", line)
-        return True
-
+    # filename = view.window().active_view().file_name()
+    # if re.search("\.(md|txt)$", filename): return True
+    # https://www.sublimetext.com/docs/scope_naming.html
+    cursor = first_cursor(view)
+    if view.match_selector(cursor.begin(), "text"): return True
+    if view.match_selector(cursor.begin(), "comment"): return True
+    if view.match_selector(cursor.begin(), "string"): return True
 
 ''' Trả lại con trỏ đầu tiên trong multi-currsors '''
 def first_cursor(view):
