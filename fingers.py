@@ -109,7 +109,6 @@ class AzPressCommand(sublime_plugin.TextCommand):
                 else: # thao tác gõ ko còn liền mạch nữa
                     State.ORIGIN = current[:-1]
                     region = sublime.Region(region.end() - 1, region.end())
-                    deleted = self.view.substr(region)
                     self.view.replace(edit, region, "")
             else:
                 # Kiểm tra sự liền mạch của thao tác gõ telex
