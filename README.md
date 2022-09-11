@@ -26,13 +26,13 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 ## DOING
 
-- Khi viết code chỉ gõ dc TV trong comment và string.
-
 - Lưu lại ORIGIN của các từ TV đã được chuyển hóa gần đây để tiện cho việc undo từ tiếng Việt trở lại thành tiếng Anh Việt (chuỗi ký tự gốc)
 
 - Làm tính năng gợi ý từ đang gõ sử dụng bằng cách thống kê n-gram các văn bản có trong current folder. Note: với bộ gõ ta có thể giả sử các từ gõ trước luôn đúng (vì gõ sai người dùng thường sẽ sửa ngay trước khi gõ từ tiếp theo)
 
 ## DONE
+
+- Khi viết code chỉ gõ dc TV trong comment và string.
 
 - Hover để tra từ điển Anh - Việt | tham khảo https://github.com/futureprogrammer360/Dictionary
 
