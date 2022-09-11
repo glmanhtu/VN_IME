@@ -28,11 +28,9 @@ ln -s ~/repos/fingers-sublime ~/Library/Application\ Support/Sublime\ Text/Packa
 
 - Khi viết code chỉ gõ dc TV trong comment và string.
 
-- Lưu lại ORIGIN keys của các từ TV đã được chuyển hóa gần đây dưới dạng queue để tiện cho việc undo ...
+- Lưu lại ORIGIN của các từ TV đã được chuyển hóa gần đây để tiện cho việc undo từ tiếng Việt trở lại thành tiếng Anh Việt (chuỗi ký tự gốc)
 
-- Làm tính năng gợi ý từ đang gõ sử dụng bằng cách thống kê n-gram các văn bản có trong current folder
-
-- Tương tự làm tính năng phát hiện lỗi chính tả sử dụng n-gram built được ở trên. Cần bộ từ tiếng Anh, phân tích ngữ âm tiếng Việt và các từ ngoài từ điển được chấp nhận trong các văn bản đã gõ (xuất hiện nhiều hơn `n` lần để đảm bảo đó là 1 từ được sử dụng lặp đi lặp lại)
+- Làm tính năng gợi ý từ đang gõ sử dụng bằng cách thống kê n-gram các văn bản có trong current folder. Note: với bộ gõ ta có thể giả sử các từ gõ trước luôn đúng (vì gõ sai người dùng thường sẽ sửa ngay trước khi gõ từ tiếp theo)
 
 ## DONE
 
